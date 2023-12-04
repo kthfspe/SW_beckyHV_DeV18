@@ -1,0 +1,13 @@
+../Drivers/CMSIS/Include/core_cm0.h:856:34:__NVIC_SystemReset	8	static,ignoring_inline_asm
+../Core/Src/main.c:106:5:main	16	static
+../Core/Src/main.c:190:6:SystemClock_Config	88	static
+../Core/Src/main.c:228:13:MX_ADC_Init	24	static
+../Core/Src/main.c:314:13:MX_CAN_Init	8	static
+../Core/Src/main.c:349:13:MX_DMA_Init	16	static
+../Core/Src/main.c:367:13:MX_GPIO_Init	48	static
+../Core/Src/main.c:402:6:current_measure	16	static
+../Core/Src/main.c:414:6:can_lv_bms_data_a_store	8	static
+../Core/Src/main.c:418:6:can_lv_bms_data_a_send_status	16	static
+../Core/Src/main.c:436:6:can_lv_bms_status_a_store	8	static
+../Core/Src/main.c:441:6:can_lv_bms_status_a_send_status	8	static
+../Core/Src/main.c:461:6:Error_Handler	8	static
