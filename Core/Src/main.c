@@ -71,10 +71,12 @@ double current_I[5], currMeas_V[5], senseMeas_V[5]; // measurement variables
 
 /* ======= CAN =========== */
 CAN_TxHeaderTypeDef pTxHeader;
+CAN_RxHeaderTypeDef pRxHeader;
 uint8_t TxData[8]; // transmitted data
+uint8_t RxData[8]; // received data
 uint32_t TxMailbox; // mailbox to store received message
 
-struct can1_ivt_data_t can1_ivt_data;
+struct can1_ivt_improved_status_t ivt_improved_status;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
