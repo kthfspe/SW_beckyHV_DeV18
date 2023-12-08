@@ -33,7 +33,7 @@ NS_ :
 
 BS_:
 
-BU_: AMS RES MCU DBU SWU ECU CCU DCU VMUF VMUR EBS IMU XBB CTMD DL LV_BMS_A LV_BMS_B FS_Datalogger FS_Datalogger VESC
+BU_: AMS RES MCU DBU SWU ECU CCU DCU VMUF VMUR EBS IMU XBB CTMD DL LV_BMS_A LV_BMS_B FS_Datalogger FS_Datalogger VESC IVT
 
 
 BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
@@ -514,8 +514,8 @@ BO_ 89 ccu_status_1: 8 CCU
  SG_ mux_ID M : 0|8@1+ (1,0) [0|2] "" Vector__XXX
 
 BO_ 88 ccu_status_2: 8 CCU
- SG_ discharge_resistor_temperature : 4|12@1+ (1,-10) [-10|190] "C"  MCU
- SG_ extra_temperature : 16|12@1+ (1,-10) [-10|190] "C" Vector__XXX
+ SG_ discharge_resistor_temperature : 4|12@1+ (1,-10) [4294967286|190] "C"  MCU
+ SG_ extra_temperature : 16|12@1+ (1,-10) [4294967286|190] "C" Vector__XXX
  SG_ digital_input : 0|1@1+ (1,0) [0|0] "" Vector__XXX
  SG_ discharge_relay_open : 1|1@1+ (1,0) [0|0] "" Vector__XXX
 
@@ -976,6 +976,13 @@ BO_ 535 ams_s12_voltages_2: 5 AMS
  SG_ s12v10 : 24|8@1+ (0.00784,2.5) [2.5|4.5] "V"  MCU
  SG_ s12v11 : 32|8@1+ (0.00784,2.5) [2.5|4.5] "V"  MCU
 
+BO_ 29 ivt_improved_status: 8 IVT
+ SG_ ivt_voltage_battery : 0|12@1+ (1,0) [0|0] "V" Vector__XXX
+ SG_ ivt_voltage_vehicle : 12|12@1+ (1,0) [0|0] "V" Vector__XXX
+ SG_ ivt_current : 24|12@1+ (1,0) [0|0] "A" Vector__XXX
+ SG_ temp_HVplus : 36|12@1+ (1,0) [0|0] "°C" Vector__XXX
+ SG_ temp_HVminus : 48|12@1+ (1,0) [0|0] "°C" Vector__XXX
+
 
 
 CM_ BU_ CTMD "Cell temperature monitor provided by FSG.";
@@ -1013,6 +1020,12 @@ CM_ BO_ 2147483673 "Set duty cycle for DV motor";
 CM_ SG_ 2147483673 Set_Duty "Duty Cycle
 ";
 CM_ SG_ 2147485977 ERPM "ERPM
+";
+CM_ SG_ 29 ivt_voltage_battery "Voltage measurement on battery side";
+CM_ SG_ 29 ivt_voltage_vehicle "Voltage measurement on vehicle side";
+CM_ SG_ 29 ivt_current "Current measurement";
+CM_ SG_ 29 temp_HVplus "Temperature Measurement on the HV+ side of board";
+CM_ SG_ 29 temp_HVminus "Temperature Measurement on HV- side of battery
 ";
 BA_DEF_ BO_  "GenMsgCycleTime" INT 0 65535;
 BA_DEF_DEF_  "GenMsgCycleTime" 0;
