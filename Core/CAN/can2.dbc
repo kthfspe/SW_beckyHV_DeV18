@@ -1,0 +1,556 @@
+VERSION ""
+
+
+NS_ : 
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_: MCU AMK1 AMK2 AMK3 AMK4 IVT AMS charger CC Host IVT_Mod P1 P2 P3
+
+
+VAL_TABLE_ VtDevice_Com 2 "CAN 2 - not terminated" 1 "CAN 1 - terminated" 0 "none" ;
+VAL_TABLE_ VtDevice_TOI 7 "TOI" 6 "OI" 5 "TI" 4 "TO" 3 "I" 2 "O" 1 "T" 0 "-" ;
+VAL_TABLE_ VtResetErrorLogdata 7 "Reset error current implausible" 6 "Reset error Vref" 5 "Reset error Underflow ADC ch2" 4 "Reset error Overflow ADC ch2" 3 "Reset error Underflow ADC ch1" 2 "Reset error Overflow ADC ch1" 1 "Reset error ADC interrupt" 0 "Reset all measurement errors" ;
+VAL_TABLE_ VtID_Result 0 "Vt_Result_inaktive" 8 "Vt_Result_Wh" 7 "Vt_Result_Ah" 6 "Vt_Result_W" 5 "Vt_Result_T" 4 "Vt_Result_U3" 3 "Vt_Result_U2" 2 "Vt_Result_U1" 1 "Vt_Result_I" ;
+VAL_TABLE_ VtID_Cmd 54 "Set_THRESHOLD_neg" 53 "Set_THRESHOLD_pos" 32 "Set_MODE_Result_I" 16 "Set_CAN_ID_Result_I" 52 "Set_MODE" 51 "START_OC_TEST" 50 "STORE" 49 "TRIGGER" 48 "Reset_Err_Log" 39 "Set_MODE_Result_Wh" 38 "Set_MODE_Result_Ah" 37 "Set_MODE_Result_W" 23 "Set_CAN_ID_Result_Wh" 22 "Set_CAN_ID_Result_Ah" 21 "Set_CAN_ID_Result_W" 20 "Set_CAN_ID_Result_T" 35 "Set_MODE_Result_U3" 31 "Set_CAN_ID_Cmd" 29 "Set_CAN_ID_Response" 19 "Set_CAN_ID_Result_U3" 18 "Set_CAN_ID_Result_U2" 36 "Set_MODE_Result_T" 34 "Set_MODE_Result_U2" 33 "Set_MODE_Result_U1" 17 "Set_CAN_ID_Result_U1" ;
+VAL_TABLE_ VtTriggerMode 2 "CYCLIC" 1 "TRIGGERED" 0 "DISABLED" ;
+VAL_TABLE_ VtRunMode 1 "START" 0 "STOP" ;
+VAL_TABLE_ VtID_Response 149 "ARTICLE_NUMBER" 148 "SERIAL NUMBER" 147 "SW_VERSION" 146 "DEVICE_ID" 145 "STATUS" 143 "CAN_ID" 142 "STORE_to_default" 134 "START_OC_TEST" 133 "Description for the value '0x85'" 132 "THRESHOLD" 131 "CONFIG" 130 "MODE" 129 "STORE" 128 "TRIGGER" ;
+
+
+
+BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
+ SG_ NewSignal_0005 : 32|8@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ NewSignal_0004 : 24|8@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ NewSignal_0001 : 47|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ Initialization_Status : 43|1@0+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 100 START_PROGRAM: 8 Vector__XXX
+ SG_ ID : 0|64@1+ (1,0) [0|0] ""  P1,P2,P3
+
+BO_ 643 amk1_actual_values_1: 8 AMK1
+ SG_ amk1_status_system_ready : 8|1@1+ (1,0) [0|0] ""  MCU
+ SG_ amk1_status_error : 9|1@1+ (1,0) [0|0] ""  MCU
+ SG_ amk1_status_warning : 10|1@1+ (1,0) [0|0] ""  MCU
+ SG_ amk1_status_quit_dc_on : 11|1@1+ (1,0) [0|0] ""  MCU
+ SG_ amk1_status_dc_on : 12|1@1+ (1,0) [0|0] ""  MCU
+ SG_ amk1_status_quit_inverter_on : 13|1@1+ (1,0) [0|0] ""  MCU
+ SG_ amk1_status_inverter_on : 14|1@1+ (1,0) [0|0] ""  MCU
+ SG_ amk1_derating : 15|1@1+ (1,0) [0|0] ""  MCU
+ SG_ amk1_actual_velocity : 16|16@1- (1,0) [0|0] "rpm"  MCU
+ SG_ amk1_torque_current : 32|16@1- (1,0) [0|0] ""  MCU
+ SG_ amk1_magnetizing_current : 48|16@1- (1,0) [0|0] ""  MCU
+
+BO_ 645 amk1_actual_values_2: 8 AMK1
+ SG_ amk1_temp_motor : 0|16@1- (0.1,0) [0|0] "C"  MCU
+ SG_ amk1_temp_inverter : 16|16@1- (0.1,0) [0|0] "C"  MCU
+ SG_ amk1_error_info : 32|16@1+ (1,0) [0|0] ""  MCU
+ SG_ amk1_temp_igbt : 48|16@1- (0.1,0) [0|0] "C"  MCU
+
+BO_ 388 amk1_setpoints_1: 8 MCU
+ SG_ amk1_control_inverter_on : 8|1@1+ (1,0) [0|0] ""  AMK1,AMK2,AMK3,AMK4,IVT,AMS
+ SG_ amk1_control_dc_on : 9|1@1+ (1,0) [0|0] ""  AMK1,AMK2,AMK3,AMK4,IVT,AMS
+ SG_ amk1_control_enable : 10|1@1+ (1,0) [0|0] ""  AMK1,AMK2,AMK3,AMK4,IVT,AMS
+ SG_ amk1_control_error_reset : 11|1@1+ (1,0) [0|0] ""  AMK1,AMK2,AMK3,AMK4,IVT,AMS
+ SG_ amk1_target_velocity : 16|16@1- (1,0) [0|0] "rpm"  AMK1,AMK2,AMK3,AMK4,IVT,AMS
+ SG_ amk1_torque_limit_positiv : 32|16@1- (1,0) [0|0] "0.1%"  AMK1,AMK2,AMK3,AMK4,IVT,AMS
+ SG_ amk1_torque_limit_negativ : 48|16@1- (1,0) [0|0] "0.1%"  AMK1,AMK2,AMK3,AMK4,IVT,AMS
+
+BO_ 644 amk2_actual_values_1: 8 AMK2
+ SG_ amk2_system_ready : 8|1@1+ (1,0) [0|0] ""  MCU
+ SG_ amk2_error : 9|1@1+ (1,0) [0|0] ""  MCU
+ SG_ amk2_warning : 10|1@1+ (1,0) [0|0] ""  MCU
+ SG_ amk2_status_quit_dc_on : 11|1@1+ (1,0) [0|0] ""  MCU
+ SG_ amk2_status_dc_on : 12|1@1+ (1,0) [0|0] ""  MCU
+ SG_ amk2_status_quit_inverter_on : 13|1@1+ (1,0) [0|0] ""  MCU
+ SG_ amk2_status_inverter_on : 14|1@1+ (1,0) [0|0] ""  MCU
+ SG_ amk2_status_derating : 15|1@1+ (1,0) [0|0] ""  MCU
+ SG_ amk2_actual_velocity : 16|16@1- (1,0) [0|0] "rpm"  MCU
+ SG_ amk2_torque_current : 32|16@1- (1,0) [0|0] ""  MCU
+ SG_ amk2_magnetizing_current : 48|16@1- (1,0) [0|0] ""  MCU
+
+BO_ 646 amk2_actual_values_2: 8 AMK2
+ SG_ amk2_temp_motor : 0|16@1- (0.1,0) [0|0] "C"  MCU
+ SG_ amk2_temp_inverter : 16|16@1- (0.1,0) [0|0] "C"  MCU
+ SG_ amk2_error_info : 32|16@1+ (1,0) [0|0] ""  MCU
+ SG_ amk2_temp_igbt : 48|16@1- (0.1,0) [0|0] "C"  MCU
+
+BO_ 389 amk2_setpoints_1: 8 MCU
+ SG_ amk2_control_inverter_on : 8|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ amk2_control_dc_on : 9|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ amk2_control_enable : 10|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ amk2_control_error_reset : 11|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ amk2_target_velocity : 16|16@1- (1,0) [0|0] "rpm" Vector__XXX
+ SG_ amk2_torque_limit_positiv : 32|16@1- (1,0) [0|0] "0.1%" Vector__XXX
+ SG_ amk2_torque_limit_negativ : 48|16@1- (1,0) [0|0] "0.1%" Vector__XXX
+
+BO_ 647 amk3_actual_values_1: 8 AMK3
+ SG_ amk3_system_ready : 8|1@1+ (1,0) [0|0] ""  MCU
+ SG_ amk3_error : 9|1@1+ (1,0) [0|0] ""  MCU
+ SG_ amk3_warning : 10|1@1+ (1,0) [0|0] ""  MCU
+ SG_ amk3_status_quit_dc_on : 11|1@1+ (1,0) [0|0] ""  MCU
+ SG_ amk3_status_dc_on : 12|1@1+ (1,0) [0|0] ""  MCU
+ SG_ amk3_status_quit_inverter_on : 13|1@1+ (1,0) [0|0] ""  MCU
+ SG_ amk3_status_inverter_on : 14|1@1+ (1,0) [0|0] ""  MCU
+ SG_ amk3_status_derating : 15|1@1+ (1,0) [0|0] ""  MCU
+ SG_ amk3_actual_velocity : 16|16@1- (1,0) [0|0] "rpm"  MCU
+ SG_ amk3_torque_current : 32|16@1- (1,0) [0|0] ""  MCU
+ SG_ amk3_magnetizing_current : 48|16@1- (1,0) [0|0] ""  MCU
+
+BO_ 649 amk3_actual_values_2: 8 AMK3
+ SG_ amk3_temp_motor : 0|16@1- (0.1,0) [0|0] "C"  MCU
+ SG_ amk3_temp_inverter : 16|16@1- (0.1,0) [0|0] "C"  MCU
+ SG_ amk3_error_info : 32|16@1+ (1,0) [0|0] ""  MCU
+ SG_ amk3_temp_igbt : 48|16@1- (0.1,0) [0|0] "C"  MCU
+
+BO_ 392 amk3_setpoints_1: 8 MCU
+ SG_ amk3_control_inverter_on : 8|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ amk3_control_dc_on : 9|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ amk3_control_enable : 10|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ amk3_control_error_reset : 11|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ amk3_target_velocity : 16|16@1- (1,0) [0|0] "" Vector__XXX
+ SG_ amk3_torque_limit_positiv : 32|16@1- (1,0) [0|0] "" Vector__XXX
+ SG_ amk3_torque_limit_negativ : 48|16@1- (1,0) [0|0] "" Vector__XXX
+
+BO_ 648 amk4_actual_values_1: 8 AMK4
+ SG_ amk4_system_ready : 8|1@1+ (1,0) [0|0] ""  MCU
+ SG_ amk4_error : 9|1@1+ (1,0) [0|0] ""  MCU
+ SG_ amk4_warning : 10|1@1+ (1,0) [0|0] ""  MCU
+ SG_ amk4_status_quit_dc_on : 11|1@1+ (1,0) [0|0] ""  MCU
+ SG_ amk4_status_dc_on : 12|1@1+ (1,0) [0|0] ""  MCU
+ SG_ amk4_status_quit_inverter_on : 13|1@1+ (1,0) [0|0] ""  MCU
+ SG_ amk4_status_inverter_on : 14|1@1+ (1,0) [0|0] ""  MCU
+ SG_ amk4_status_derating : 15|1@1+ (1,0) [0|0] ""  MCU
+ SG_ amk4_actual_velocity : 16|16@1- (1,0) [0|0] "rpm"  MCU
+ SG_ amk4_torque_current : 32|16@1- (1,0) [0|0] ""  MCU
+ SG_ amk4_magnetizing_current : 48|16@1- (1,0) [0|0] ""  MCU
+
+BO_ 650 amk4_actual_values_2: 8 AMK4
+ SG_ amk4_temp_motor : 0|16@1- (0.1,0) [0|0] "C"  MCU
+ SG_ amk4_temp_inverter : 16|16@1- (0.1,0) [0|0] "C"  MCU
+ SG_ amk4_error_info : 32|16@1+ (1,0) [0|0] ""  MCU
+ SG_ amk4_temp_igbt : 48|16@1- (0.1,0) [0|0] "C"  MCU
+
+BO_ 393 amk4_setpoints_1: 8 MCU
+ SG_ amk4_control_inverter_on : 8|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ amk4_control_dc_on : 9|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ amk4_control_enable : 10|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ amk4_control_error_reset : 11|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ amk4_target_velocity : 16|16@1- (1,0) [0|0] "rpm" Vector__XXX
+ SG_ amk4_torque_limit_positiv : 32|16@1- (1,0) [0|0] "0.1%" Vector__XXX
+ SG_ amk4_torque_limit_negativ : 48|16@1- (1,0) [0|0] "0.1%" Vector__XXX
+
+BO_ 1560 set_charger_points: 7 Vector__XXX
+ SG_ eighty : 0|8@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ reserved : 8|16@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ voltage_demand : 31|16@0+ (0.1,0) [0|0] "" Vector__XXX
+ SG_ current_demand : 47|16@0+ (0.1,0) [0|0] "" Vector__XXX
+
+BO_ 624 charger_config: 4 charger
+ SG_ set_mux M : 0|8@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ MsgSetVoltageLimit m64 : 23|16@0+ (1,0) [0|900] "Volt" Vector__XXX
+ SG_ MsgSetCurrentLimit m65 : 23|16@0+ (0.1,0) [0|13.3] "Ampere" Vector__XXX
+ SG_ MsgSetPowerLimit m66 : 23|16@0+ (1,0) [0|6000] "Watt" Vector__XXX
+ SG_ MsgSetEnabled m68 : 23|8@0+ (1,0) [0|1] "" Vector__XXX
+ SG_ MsgSetTimeOut m68 : 31|8@0+ (1,0) [0|0] "seconds" Vector__XXX
+ SG_ MsgChooseChargers : 15|8@0+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 592 cc_status: 1 CC
+ SG_ enable_ams_charging : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 1320 IVT_Msg_Result_Wh: 6 IVT_Mod
+ SG_ IVT_Result_Wh_System_Error : 15|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ IVT_Result_Wh_OCS : 12|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ IVT_Result_Wh_Measurement_Error : 14|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ IVT_Result_Wh_Channel_Error : 13|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ IVT_Result_Wh : 23|32@0- (1,0) [0|0] "Wh"  Host
+ SG_ IVT_MsgCount_Result_Wh : 11|4@0+ (1,0) [0|0] ""  Host
+ SG_ IVT_ID_Result_Wh : 7|8@0+ (1,0) [7|7] ""  Host
+
+BO_ 1319 IVT_Msg_Result_As: 6 IVT_Mod
+ SG_ IVT_Result_As_System_Error : 15|1@0+ (1,0) [0|0] ""  AMS
+ SG_ IVT_Result_As_OCS : 12|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ IVT_Result_As_Measurement_Error : 14|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ IVT_Result_As_Channel_Error : 13|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ IVT_Result_As : 23|32@0- (1,0) [0|0] "As"  Host
+ SG_ IVT_MsgCount_Result_As : 11|4@0+ (1,0) [0|0] ""  Host
+ SG_ IVT_ID_Result_As : 7|8@0+ (1,0) [6|6] ""  Host
+
+BO_ 1318 IVT_Msg_Result_W: 6 IVT_Mod
+ SG_ IVT_Result_W_System_Error : 15|1@0+ (1,0) [0|0] ""  AMS
+ SG_ IVT_Result_W_OCS : 12|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ IVT_Result_W_Measurement_Error : 14|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ IVT_Result_W_Channel_Error : 13|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ IVT_Result_W : 23|32@0- (1,0) [0|0] "W"  Host
+ SG_ IVT_MsgCount_Result_W : 11|4@0+ (1,0) [0|0] ""  Host
+ SG_ IVT_ID_Result_W : 7|8@0+ (1,0) [5|5] ""  Host
+
+BO_ 1297 IVT_Msg_Response: 8 IVT_Mod
+ SG_ _B1_Trigger_spare m177 : 15|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _B1_07_Trigger_WH m177 : 23|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _B1_06_Trigger_As m177 : 22|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _B1_05_Trigger_W m177 : 21|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _B1_04_Trigger_T m177 : 20|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _B1_03_Trigger_U3 m177 : 19|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _B1_02_Trigger_U2 m177 : 18|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _B1_01_Trigger_U1 m177 : 17|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _B1_00_Trigger_I m177 : 16|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _B2_Resp_Store_Device_SN m178 : 23|32@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _FF_Wrong_Command m255 : 15|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _BF_Restart_Alive_SN m191 : 31|32@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _BF_Restart_Alive_Cmd_ID m191 : 15|16@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _BA_Resp_SW_Ver_Vear m186 : 39|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _BA_Resp_SW_Ver_Revision m186 : 31|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _BA_Resp_SW_Ver_Month m186 : 40|8@1- (1,0) [0|0] "" Vector__XXX
+ SG_ _BA_Resp_SW_Ver_Minor m186 : 23|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _BA_Resp_SW_Ver_Internal m186 : 63|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _BA_Resp_SW_Ver_Day m186 : 55|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _B9_Resp_Device_Com m185 : 47|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _B9_Resp_Device_current m185 : 23|12@0+ (1,0) [0|0] "A" Vector__XXX
+ SG_ _B9_Resp_Device_spare m185 : 63|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _B9_Resp_Device_TOI m185 : 39|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _B9_Resp_Device_V_supply m185 : 55|8@0+ (1,0) [0|0] "V" Vector__XXX
+ SG_ _B9_Resp_Device_Voltage_chan m185 : 27|4@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _80_Resp_MeasError_Item m128 : 15|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _80_Resp_MeasError_Count_Mask m128 : 23|16@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _81_Resp_SystemError_Item m129 : 15|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _81_Resp_SystemError_Count_Mask m129 : 23|16@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _82_Resp_AllLogData_Item m130 : 15|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _82_Resp_AllLogData_Counter m130 : 23|48@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _83_Resp_LogData_Item m131 : 15|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _83_Resp_LogData_Counter m131 : 23|48@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _90_Resp_Can_ID_SN_I m144 : 31|32@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _90_Resp_Can_ID_val_I m144 : 15|16@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _91_Resp_Can_ID_SN_U1 m145 : 31|32@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _91_Resp_Can_ID_val_U1 m145 : 15|16@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _92_Resp_Can_ID_SN_U2 m146 : 31|32@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _92_Resp_Can_ID_val_U2 m146 : 15|16@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _93_Resp_Can_ID_SN_U3 m147 : 31|32@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _93_Resp_Can_ID_val_U3 m147 : 15|16@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _94_Resp_Can_ID_SN_T m148 : 31|32@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _94_Resp_Can_ID_val_T m148 : 15|16@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _95_Resp_Can_ID_SN_W m149 : 31|32@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _95_Resp_Can_ID_val_W m149 : 15|16@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _96_Resp_Can_ID_SN_As m150 : 31|32@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _96_Resp_Can_ID_val_As m150 : 15|16@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _97_Resp_Can_ID_SN_Wh m151 : 31|32@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _97_Resp_Can_ID_val_Wh m151 : 15|16@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _9D_Resp_Can_ID_SN_Command m157 : 31|32@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _9D_Resp_Can_ID_val_Command m157 : 15|16@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _9F_Resp_Can_ID_SN_Response m159 : 31|32@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _9F_Resp_Can_ID_val_Response m159 : 15|16@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _A0_Resp_CycleTime_I m160 : 23|16@0+ (1,0) [0|0] "ms" Vector__XXX
+ SG_ _A0_Resp_Endianess_I m160 : 14|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _A0_Resp_Sign_I m160 : 15|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _A0_Resp_TriggerMode_I m160 : 9|2@0+ (1,0) [0|2] "" Vector__XXX
+ SG_ _A1_Resp_CycleTime_U1 m161 : 23|16@0+ (1,0) [0|0] "ms" Vector__XXX
+ SG_ _A1_Resp_Endianess_U1 m161 : 14|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _A1_Resp_Sign_U1 m161 : 15|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _A1_Resp_TriggerMode_U1 m161 : 9|2@0+ (1,0) [0|2] "" Vector__XXX
+ SG_ _A2_Resp_CycleTime_U2 m162 : 23|16@0+ (1,0) [0|0] "ms" Vector__XXX
+ SG_ _A2_Resp_Endianess_U2 m162 : 14|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _A2_Resp_Sign_U2 m162 : 15|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _A2_Resp_TriggerMode_U2 m162 : 9|2@0+ (1,0) [0|2] "" Vector__XXX
+ SG_ _A3_Resp_CycleTime_U3 m163 : 23|16@0+ (1,0) [0|0] "ms" Vector__XXX
+ SG_ _A3_Resp_Endianess_U3 m163 : 14|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _A3_Resp_Sign_U3 m163 : 15|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _A3_Resp_TriggerMode_U3 m163 : 9|2@0+ (1,0) [0|2] "" Vector__XXX
+ SG_ _A4_Resp_CycleTime_T m164 : 23|16@0+ (1,0) [0|0] "ms" Vector__XXX
+ SG_ _A4_Resp_Endianess_T m164 : 14|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _A4_Resp_Sign_T m164 : 15|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _A4_Resp_TriggerMode_T m164 : 9|2@0+ (1,0) [0|2] "" Vector__XXX
+ SG_ _A5_Resp_CycleTime_W m165 : 23|16@0+ (1,0) [0|0] "ms" Vector__XXX
+ SG_ _A5_Resp_Endianess_W m165 : 14|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _A5_Resp_Sign_W m165 : 15|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _A5_Resp_TriggerMode_W m165 : 9|2@0+ (1,0) [0|2] "" Vector__XXX
+ SG_ _A6_Resp_CycleTime_As m166 : 23|16@0+ (1,0) [0|0] "ms" Vector__XXX
+ SG_ _A6_Resp_Endianess_As m166 : 14|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _A6_Resp_Sign_As m166 : 15|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _A6_Resp_TriggerMode_As m166 : 9|2@0+ (1,0) [0|2] "" Vector__XXX
+ SG_ _A7_Resp_CycleTime_WH m167 : 23|16@0+ (1,0) [0|0] "ms" Vector__XXX
+ SG_ _A7_Resp_Endianess_WH m167 : 14|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _A7_Resp_Sign_WH m167 : 15|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _A7_Resp_TriggerMode_WH m167 : 9|2@0+ (1,0) [0|2] "" Vector__XXX
+ SG_ _B0_Resp_Reset_Item m176 : 15|16@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _B0_Resp_Reset_Device_SN m176 : 31|32@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _B2_Resp_Store_dummy m178 : 15|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _B3_Resp_Oc_Test_Time m179 : 15|16@0+ (1,0) [0|0] "ms" Vector__XXX
+ SG_ _B4_Resp_Actual_Mode m180 : 8|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _B4_Resp_Code_Level m180 : 31|16@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _B4_Resp_Startup_Mode m180 : 16|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _B5_Resp_OC_Pos_Reset_Threshold m181 : 31|16@0- (1,0) [0|0] "" Vector__XXX
+ SG_ _B5_Resp_OC_Pos_Set_Threshold m181 : 15|16@0- (1,0) [0|0] "" Vector__XXX
+ SG_ _B6_Resp_OC_Neg_Reset_Threshold m182 : 31|16@0- (1,0) [0|0] "" Vector__XXX
+ SG_ _B6_Resp_OC_Neg_Set_Threshold m182 : 15|16@0- (1,0) [0|0] "" Vector__XXX
+ SG_ _B9_Resp_Device_type m185 : 15|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _BA_Resp_SW_Ver_Major_HW m186 : 15|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _BB_Resp_Serien_Nr m187 : 15|32@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _BC_Resp_Art_N m188 : 15|56@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ IVT_Response_data m0 : 15|56@0+ (1,0) [0|0] ""  Host
+ SG_ IVT_ID_Response M : 7|8@0+ (1,0) [0|0] ""  Host
+
+BO_ 1317 IVT_Msg_Result_T: 6 IVT_Mod
+ SG_ IVT_Result_T_System_Error : 15|1@0+ (1,0) [0|0] ""  AMS
+ SG_ IVT_Result_T_OCS : 12|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ IVT_Result_T_Measurement_Error : 14|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ IVT_Result_T_Channel_Error : 13|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ IVT_ID_Result_T : 7|8@0+ (1,0) [4|4] ""  Host
+ SG_ IVT_Result_T : 23|32@0- (1,0) [-32767|32768] "�C"  Host
+ SG_ IVT_MsgCount_Result_T : 11|4@0+ (1,0) [0|0] ""  Host
+
+BO_ 1316 IVT_Msg_Result_U3: 6 IVT_Mod
+ SG_ IVT_Result_U3_System_Error : 15|1@0+ (1,0) [0|0] ""  AMS
+ SG_ IVT_Result_U3_OCS : 12|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ IVT_Result_U3_Measurement_Error : 14|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ IVT_Result_U3_Channel_Error : 13|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ IVT_ID_Result_U3 : 7|8@0+ (1,0) [3|3] ""  Host
+ SG_ IVT_Result_U3 : 23|32@0- (1,0) [0|0] "mV"  Host
+ SG_ IVT_MsgCount_Result_U3 : 11|4@0+ (1,0) [0|0] ""  Host
+
+BO_ 1315 IVT_Msg_Result_U2: 6 IVT_Mod
+ SG_ IVT_Result_U2_System_Error : 15|1@0+ (1,0) [0|0] ""  AMS
+ SG_ IVT_Result_U2_OCS : 12|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ IVT_Result_U2_Measurement_Error : 14|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ IVT_Result_U2_Channel_Error : 13|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ IVT_ID_Result_U2 : 7|8@0+ (1,0) [2|2] ""  Host
+ SG_ IVT_MsgCount_Result_U2 : 11|4@0+ (1,0) [0|0] ""  Host
+ SG_ IVT_Result_U2 : 23|32@0- (1,0) [0|0] "mV"  Host
+
+BO_ 1314 IVT_Msg_Result_U1: 6 IVT_Mod
+ SG_ IVT_Result_U1_System_Error : 15|1@0+ (1,0) [0|0] ""  AMS
+ SG_ IVT_Result_U1_Measurement_Error : 14|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ IVT_Result_U1_Channel_Error : 13|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ IVT_Result_U1_OCS : 12|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ IVT_ID_Result_U1 : 7|8@0+ (1,0) [1|1] ""  Host
+ SG_ IVT_Result_U1 : 23|32@0- (1,0) [0|0] "mV"  Host
+ SG_ IVT_MsgCount_Result_U1 : 11|4@0+ (1,0) [0|0] ""  Host
+
+BO_ 1313 IVT_Msg_Result_I: 6 IVT_Mod
+ SG_ IVT_Result_I_System_Error : 15|1@0+ (1,0) [0|0] ""  AMS
+ SG_ IVT_Result_I_OCS : 12|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ IVT_Result_I_Measurement_Error : 14|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ IVT_Result_I_Channel_Error : 13|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ IVT_ID_Result_I : 7|8@0+ (1,0) [0|0] ""  Host
+ SG_ IVT_MsgCount_Result_I : 11|4@0+ (1,0) [0|0] ""  Host
+ SG_ IVT_Result_I : 23|32@0- (1,0) [0|0] "mA"  Host
+
+BO_ 1041 IVT_Msg_Cmd: 8 Host
+ SG_ _31_01_Trigger_U1 m49 : 17|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _31_07_Trigger_WH m49 : 23|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _31_06_Trigger_As m49 : 22|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _31_05_Trigger_W m49 : 21|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _31_04_Trigger_T m49 : 20|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _31_03_Trigger_U3 m49 : 19|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _31_Trigger_spare m49 : 15|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _31_02_Trigger_U2 m49 : 18|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _10_Set_Can_ID_SN_I m16 : 31|32@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _10_Set_Can_ID_val_I m16 : 15|16@0+ (1,0) [0|2047] ""  IVT_Mod
+ SG_ _11_Set_Can_ID_SN_U1 m17 : 31|32@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _11_Set_Can_ID_val_U1 m17 : 15|16@0+ (1,0) [0|2047] "" Vector__XXX
+ SG_ _12_Set_Can_ID_SN_U2 m18 : 31|32@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _12_Set_Can_ID_val_U2 m18 : 15|16@0+ (1,0) [0|2047] "" Vector__XXX
+ SG_ _13_Set_Can_ID_SN_U3 m19 : 31|32@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _13_Set_Can_ID_val_U3 m19 : 15|16@0+ (1,0) [0|2047] "" Vector__XXX
+ SG_ _14_Set_Can_ID_SN_T m20 : 31|32@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _14_Set_Can_ID_val_T m20 : 15|16@0+ (1,0) [0|2047] "" Vector__XXX
+ SG_ _15_Set_Can_ID_SN_W m21 : 31|32@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _15_Set_Can_ID_val_W m21 : 15|16@0+ (1,0) [0|2047] "" Vector__XXX
+ SG_ _16_Set_Can_ID_SN_As m22 : 31|32@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _16_Set_Can_ID_val_As m22 : 15|16@0+ (1,0) [0|2047] "" Vector__XXX
+ SG_ _17_Set_Can_ID_SN_Wh m23 : 31|32@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _17_Set_Can_ID_val_Wh m23 : 15|16@0+ (1,0) [0|2047] "" Vector__XXX
+ SG_ _1D_Set_Can_ID_SN_Command m29 : 31|32@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _1D_Set_Can_ID_val_Command m29 : 15|16@0+ (1,0) [0|2047] "" Vector__XXX
+ SG_ _1F_Set_Can_ID_SN_Response m31 : 31|32@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _1F_Set_Can_ID_val_Response m31 : 15|16@0+ (1,0) [0|2047] "" Vector__XXX
+ SG_ _20_Conf_CycleTime_I m32 : 23|16@0+ (1,0) [0|0] "ms" Vector__XXX
+ SG_ _20_Conf_Endianess_I m32 : 14|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _20_Conf_Sign_I m32 : 15|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _20_Conf_TriggerMode_I m32 : 9|2@0+ (1,0) [0|2] "" Vector__XXX
+ SG_ _21_Conf_CycleTime_U1 m33 : 23|16@0+ (1,0) [0|0] "ms" Vector__XXX
+ SG_ _21_Conf_Endianess_U1 m33 : 14|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _21_Conf_Sign_U1 m33 : 15|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _21_Conf_TriggerMode_U1 m33 : 9|2@0+ (1,0) [0|2] "" Vector__XXX
+ SG_ _22_Conf_CycleTime_U2 m34 : 23|16@0+ (1,0) [0|0] "ms" Vector__XXX
+ SG_ _22_Conf_Endianess_U2 m34 : 14|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _22_Conf_Sign_U2 m34 : 15|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _22_Conf_TriggerMode_U2 m34 : 9|2@0+ (1,0) [0|2] "" Vector__XXX
+ SG_ _23_Conf_CycleTime_U3 m35 : 23|16@0+ (1,0) [0|0] "ms" Vector__XXX
+ SG_ _23_Conf_Endianess_U3 m35 : 14|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _23_Conf_Sign_U3 m35 : 15|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _23_Conf_TriggerMode_U3 m35 : 9|2@0+ (1,0) [0|2] "" Vector__XXX
+ SG_ _24_Conf_CycleTime_T m36 : 23|16@0+ (1,0) [0|0] "ms" Vector__XXX
+ SG_ _24_Conf_Endianess_T m36 : 14|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _24_Conf_Sign_T m36 : 15|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _24_Conf_TriggerMode_T m36 : 9|2@0+ (1,0) [0|2] "" Vector__XXX
+ SG_ _25_Conf_CycleTime_W m37 : 23|16@0+ (1,0) [0|0] "ms" Vector__XXX
+ SG_ _25_Conf_Endianess_W m37 : 14|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _25_Conf_Sign_W m37 : 15|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _25_Conf_TriggerMode_W m37 : 9|2@0+ (1,0) [0|2] "" Vector__XXX
+ SG_ _26_Conf_CycleTime_As m38 : 23|16@0+ (1,0) [0|0] "ms" Vector__XXX
+ SG_ _26_Conf_Endianess_As m38 : 14|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _26_Conf_Sign_As m38 : 15|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _26_Conf_TriggerMode_As m38 : 9|2@0+ (1,0) [0|2] "" Vector__XXX
+ SG_ _27_Conf_CycleTime_WH m39 : 23|16@0+ (1,0) [0|0] "ms" Vector__XXX
+ SG_ _27_Conf_Endianess_WH m39 : 14|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _27_Conf_Sign_WH m39 : 15|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _27_Conf_TriggerMode_WH m39 : 9|2@0+ (1,0) [0|2] "" Vector__XXX
+ SG_ _30_Reset_Item m48 : 15|16@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _30_Reset_Device_SN m48 : 31|32@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _31_00_Trigger_I m49 : 16|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _32_Store_dummy m50 : 15|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _33_Oc_Test_Time m51 : 15|16@0+ (1,0) [0|0] "ms" Vector__XXX
+ SG_ _34_Actual_Mode m52 : 8|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _34_Code_Level m52 : 31|16@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _34_Startup_Mode m52 : 16|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _35_OC_Pos_Reset_Threshold m53 : 31|16@0- (1,0) [0|0] "A" Vector__XXX
+ SG_ _35_OC_Pos_Set_Threshold m53 : 15|16@0- (1,0) [0|0] "A" Vector__XXX
+ SG_ _36_OC_Neg_Reset_Threshold m54 : 31|16@0- (1,0) [0|0] "A" Vector__XXX
+ SG_ _36_OC_Neg_Set_Threshold m54 : 15|16@0- (1,0) [0|0] "A" Vector__XXX
+ SG_ _3A_Restart_Prescaler m58 : 15|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _3D_Restart_Default_Dummy m61 : 15|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _3F_Restart_Dummy m63 : 15|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _40_Get_MeasError_Item m64 : 15|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _41_Get_SystemError_Item m65 : 15|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _42_Get_AllLogData_Item m66 : 15|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _43_Get_LogData_Item m67 : 15|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _50_Get_Can_ID_SN_I m80 : 31|32@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _51_Get_Can_ID_SN_U1 m81 : 31|32@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _52_Get_Can_ID_SN_U2 m82 : 31|32@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _53_Get_Can_ID_SN_U3 m83 : 31|32@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _54_Get_Can_ID_SN_T m84 : 31|32@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _55_Get_Can_ID_SN_W m85 : 31|32@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _56_Get_Can_ID_SN_As m86 : 31|32@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _57_Get_Can_ID_SN_Wh m87 : 31|32@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _5D_Get_Can_ID_SN_Command m93 : 31|32@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _5F_Get_Can_ID_SN_Response m95 : 31|32@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _60_Get_Result_dummy_I m96 : 15|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _61_Get_Result_dummy_U1 m97 : 15|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _62_Get_Result_dummy_U2 m98 : 15|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _63_Get_Result_dummy_U3 m99 : 15|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _64_Get_Result_dummy_T m100 : 15|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _65_Get_Result_dummy_W m101 : 15|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _66_Get_Result_dummy_As m102 : 15|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _67_Get_Result_dummy_Wh m103 : 15|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _73_Get_OC_Test_dummy m115 : 15|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _74_Get_Mode_dummy m116 : 15|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _75_Get_OC_Pos_dummy m117 : 15|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _76_Get_OC_Neg_dummy m118 : 15|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _79_Get_Device_Id_dummy m121 : 15|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _7A_Get_SW_Version_dummy m122 : 15|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _7B_Get_Serien_Nr_dummy m123 : 15|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ _7C_Get_Art_Nr_dummy m124 : 15|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ IVT_ID_Cmd M : 7|8@0+ (1,0) [0|0] ""  IVT_Mod
+ SG_ IVT_Cmd_data m0 : 15|56@0+ (1,0) [0|0] ""  IVT_Mod
+
+BO_ 2550588916 HK_LF540_setpoint: 8 charger
+ SG_ Max_Voltage : 7|16@0+ (0.1,0) [0|0] "V" Vector__XXX
+ SG_ Max_Current : 23|16@0+ (0.1,0) [0|0] "A" Vector__XXX
+ SG_ Enable : 39|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ Operating_Mode : 47|8@0+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 2566869221 HK_LF540_actual_values: 8 charger
+ SG_ Actual_voltage : 7|16@0+ (0.1,0) [0|0] "V" Vector__XXX
+ SG_ Actual_current : 23|16@0+ (0.1,0) [0|0] "A" Vector__XXX
+ SG_ IV_Status : 39|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ Communication_Status : 40|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ Working_Status : 42|2@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ Fan_Status : 44|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ CC_Charging_Status : 49|2@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ CP_Charging_Status : 50|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ Charging_Socket_Status : 51|1@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ Electronic_Lock_State : 54|3@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ Charger_Temperature : 63|8@0+ (1,-40) [0|0] "" Vector__XXX
+
+
+
+EV_ envSTM8test: 0 [0|0] "" 0 1 DUMMY_NODE_VECTOR0  Vector__XXX;
+
+EV_ EnvKlemme15: 0 [0|1] "" 0 2 DUMMY_NODE_VECTOR0  Vector__XXX;
+
+CM_ BO_ 643 "Periodic 5ms.";
+CM_ SG_ 643 amk1_status_system_ready "System ready (SBM).";
+CM_ SG_ 643 amk1_status_error "Error.";
+CM_ SG_ 643 amk1_status_warning "Warning.";
+CM_ SG_ 643 amk1_status_quit_dc_on "HV activation acknowledgment.";
+CM_ SG_ 643 amk1_status_dc_on "HV activation level.";
+CM_ SG_ 643 amk1_status_quit_inverter_on "Controller enable acknowledgment.";
+CM_ SG_ 643 amk1_status_inverter_on "Controller enable level.";
+CM_ SG_ 643 amk1_derating "Derating (torque limitation active).";
+CM_ SG_ 643 amk1_actual_velocity "Actual speed value.";
+CM_ SG_ 643 amk1_torque_current "Raw data for calculating 'actual torque current'.";
+CM_ SG_ 643 amk1_magnetizing_current "Raw data for calculating 'actual magnetizing current'.";
+CM_ BO_ 645 "Periodic 5ms.";
+CM_ SG_ 645 amk1_temp_motor "Motor temperature.";
+CM_ SG_ 645 amk1_temp_inverter "Cold plate temperature.";
+CM_ SG_ 645 amk1_error_info "Diagnostic number.";
+CM_ SG_ 645 amk1_temp_igbt "IGBT temperature.";
+CM_ BO_ 388 "Periodic< 50ms.";
+CM_ SG_ 388 amk1_control_inverter_on "Controller enable.";
+CM_ SG_ 388 amk1_control_dc_on "HV activation.";
+CM_ SG_ 388 amk1_control_enable "Driver enable.";
+CM_ SG_ 388 amk1_control_error_reset "Remove error (Setpoints must have value 0).";
+CM_ SG_ 388 amk1_target_velocity "Speed setpoint.";
+CM_ SG_ 388 amk1_torque_limit_positiv "Positive torque limit.";
+CM_ SG_ 388 amk1_torque_limit_negativ "Negative torque limit.";
+CM_ BO_ 644 "Periodic 5ms.";
+CM_ BO_ 646 "Periodic 5ms.";
+CM_ BO_ 389 "Periodic< 50ms.";
+CM_ BO_ 647 "Periodic 5ms.";
+CM_ BO_ 649 "Periodic 5ms.";
+CM_ BO_ 392 "Periodic< 50ms.";
+CM_ BO_ 648 "Periodic 5ms.";
+CM_ BO_ 650 "Periodic 5ms.";
+CM_ BO_ 393 "Periodic< 50ms.";
+CM_ SG_ 624 MsgSetVoltageLimit "Chargers in series should be treated as one unit";
+CM_ SG_ 624 MsgSetCurrentLimit "Chargers in series should be treated as one unit";
+CM_ SG_ 624 MsgSetPowerLimit "Chargers in series should be treated as one unit";
+CM_ SG_ 624 MsgSetTimeOut "minimun T = 2 sec. message should be sent with a periodicity of T/4.";
+CM_ SG_ 624 MsgChooseChargers "This signal decides which charger the message shall be sent to. 00 is the first charger,  01 is the second charger. Set it to hex(FF)  i.e 255 in decimal to send to all chargers";
+CM_ BO_ 592 "";
+CM_ SG_ 592 enable_ams_charging "signal that enables/informs AMS to start charging sequence";
+CM_ BO_ 2550588916 "Periodic 500ms";
+CM_ BO_ 2566869221 "Periodic 500ms";
+VAL_ 100 ID 0 "none" 1 "P1" 2 "P2" 3 "P3" ;
+VAL_ 624 MsgSetEnabled 1 "enable" 0 "disable" ;
+VAL_ 624 MsgChooseChargers 255 "ALL_CHARGERS" ;
+VAL_ 592 enable_ams_charging 0 "DISABLE" 1 "ENABLE" ;
+VAL_ 2550588916 Enable 1 "Not Enabled" 0 "Enabled" ;
+VAL_ 2550588916 Operating_Mode 0 "Charging Mode" 1 "Heating Mode" ;
+VAL_ 2566869221 IV_Status 1 "Hardware Failure" 2 "Over Temperature" 4 "Input Under Voltage" 8 "Input Over Voltage" 12 "No Input Voltage" 16 "Output Under Voltage" 32 "Output Over Voltage" 64 "Output Over Current" 128 "Output Short Circuit" 0 "Normal" ;
+VAL_ 2566869221 Communication_Status 1 "Communication Time-out" 0 "Communication OK" ;
+VAL_ 2566869221 Working_Status 0 "Undefined" 1 "Working" 2 "Stop" 3 "Stop or Standby" ;
+VAL_ 2566869221 Fan_Status 0 "Fan Off" 1 "Fan On" ;
+VAL_ 2566869221 CC_Charging_Status 0 "Not Connected" 1 "Half Connected" 2 "Connected" 3 "Resistance Detection Error" ;
+VAL_ 2566869221 CP_Charging_Status 0 "No CP Signal Detected" 1 "CP Signal OK" ;
+VAL_ 2566869221 Charging_Socket_Status 0 "Normal" 1 "Over-Temperature Protection" ;
+VAL_ 2566869221 Electronic_Lock_State 0 "In Judgement" 1 "Locked" 2 "Unlocked" 3 "Unlock Fault" 4 "Lock Fault" ;
+

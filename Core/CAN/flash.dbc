@@ -1,0 +1,165 @@
+VERSION ""
+
+
+NS_ : 
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_: ALL DCU ECU CCU DBU AMS
+
+BO_ 1401 system_status: 8 Vector__XXX
+ SG_ goto_app : 0|1@1+ (1,0) [0|0] "" ALL
+ SG_ goto_iap : 1|1@1+ (1,0) [0|0] "" ALL
+
+BO_ 1410 DCU_status: 8 DCU
+ SG_ status : 0|64@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 1411 DCU_write_req: 8 Vector__XXX
+ SG_ address : 0|32@1+ (1,0) [0|0] "" DCU
+ SG_ word : 32|32@1+ (1,0) [0|0] "" DCU
+
+BO_ 1412 DCU_write_res: 8 DCU
+ SG_ address : 0|32@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ word : 32|32@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 1413 DCU_read_req: 8 Vector__XXX
+ SG_ address : 0|32@1+ (1,0) [0|0] "" DCU
+ SG_ word : 32|32@1+ (1,0) [0|0] "" DCU
+
+BO_ 1414 DCU_read_res: 8 DCU
+ SG_ address : 0|32@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ word : 32|32@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 1415 DCU_erase_req: 8 Vector__XXX
+ SG_ erase_all : 0|32@1+ (1,0) [0|0] "" DCU
+
+BO_ 1416 DCU_erase_res: 8 DCU
+ SG_ erase_all : 0|32@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 1420 ECU_status: 8 ECU
+ SG_ status : 0|64@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 1421 ECU_write_req: 8 Vector__XXX
+ SG_ address : 0|32@1+ (1,0) [0|0] "" ECU
+ SG_ word : 32|32@1+ (1,0) [0|0] "" ECU
+
+BO_ 1422 ECU_write_res: 8 ECU
+ SG_ address : 0|32@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ word : 32|32@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 1423 ECU_read_req: 8 Vector__XXX
+ SG_ address : 0|32@1+ (1,0) [0|0] "" ECU
+ SG_ word : 32|32@1+ (1,0) [0|0] "" ECU
+
+BO_ 1424 ECU_read_res: 8 ECU
+ SG_ address : 0|32@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ word : 32|32@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 1425 ECU_erase_req: 8 Vector__XXX
+ SG_ erase_all : 0|32@1+ (1,0) [0|0] "" ECU
+
+BO_ 1426 ECU_erase_res: 8 ECU
+ SG_ erase_all : 0|32@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 1430 CCU_status: 8 CCU
+ SG_ status : 0|64@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 1431 CCU_write_req: 8 Vector__XXX
+ SG_ address : 0|32@1+ (1,0) [0|0] "" CCU
+ SG_ word : 32|32@1+ (1,0) [0|0] "" CCU
+
+BO_ 1432 CCU_write_res: 8 CCU
+ SG_ address : 0|32@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ word : 32|32@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 1433 CCU_read_req: 8 Vector__XXX
+ SG_ address : 0|32@1+ (1,0) [0|0] "" CCU
+ SG_ word : 32|32@1+ (1,0) [0|0] "" CCU
+
+BO_ 1434 CCU_read_res: 8 CCU
+ SG_ address : 0|32@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ word : 32|32@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 1435 CCU_erase_req: 8 Vector__XXX
+ SG_ erase_all : 0|32@1+ (1,0) [0|0] "" CCU
+
+BO_ 1436 CCU_erase_res: 8 CCU
+ SG_ erase_all : 0|32@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 1440 DBU_status: 8 DBU
+ SG_ status : 0|64@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 1441 DBU_write_req: 8 Vector__XXX
+ SG_ address : 0|32@1+ (1,0) [0|0] "" DBU
+ SG_ word : 32|32@1+ (1,0) [0|0] "" DBU
+
+BO_ 1442 DBU_write_res: 8 DBU
+ SG_ address : 0|32@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ word : 32|32@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 1443 DBU_read_req: 8 Vector__XXX
+ SG_ address : 0|32@1+ (1,0) [0|0] "" DBU
+ SG_ word : 32|32@1+ (1,0) [0|0] "" DBU
+
+BO_ 1444 DBU_read_res: 8 DBU
+ SG_ address : 0|32@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ word : 32|32@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 1445 DBU_erase_req: 8 Vector__XXX
+ SG_ erase_all : 0|32@1+ (1,0) [0|0] "" DBU
+
+BO_ 1446 DBU_erase_res: 8 DBU
+ SG_ erase_all : 0|32@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 1450 AMS_status: 8 AMS
+ SG_ status : 0|64@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 1451 AMS_write_req: 8 Vector__XXX
+ SG_ address : 0|32@1+ (1,0) [0|0] "" AMS
+ SG_ word : 32|32@1+ (1,0) [0|0] "" AMS
+
+BO_ 1452 AMS_write_res: 8 AMS
+ SG_ address : 0|32@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ word : 32|32@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 1453 AMS_read_req: 8 Vector__XXX
+ SG_ address : 0|32@1+ (1,0) [0|0] "" AMS
+ SG_ word : 32|32@1+ (1,0) [0|0] "" AMS
+
+BO_ 1454 AMS_read_res: 8 AMS
+ SG_ address : 0|32@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ word : 32|32@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 1455 AMS_erase_req: 8 Vector__XXX
+ SG_ erase_all : 0|32@1+ (1,0) [0|0] "" AMS
+
+BO_ 1456 AMS_erase_res: 8 AMS
+ SG_ erase_all : 0|32@1+ (1,0) [0|0] "" Vector__XXX
