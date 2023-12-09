@@ -33,6 +33,12 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 
+/* Define which ADCs are taking which measurements */
+#define ADC_curr_N 0
+#define ADC_therm1_N 1
+#define ADC_therm2_N 2
+#define ADC_voltBat_N 3
+#define ADC_voltVehicle_N 4
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -67,7 +73,7 @@ float ADC_reference_voltage = 3.3;
 
 volatile int ADC_interrupt_flag;  // set by ADC callback
 volatile int timeout;
-double current_I[5], currMeas_V[5], senseMeas_V[5]; // measurement variables
+double current_I, vBat_V, vVehicle_V, tTherm1_C, tTherm2_C; // measurement variables
 
 /* ======= CAN =========== */
 CAN_TxHeaderTypeDef pTxHeader;
@@ -88,11 +94,10 @@ static void MX_CAN_Init(void);
 /* USER CODE BEGIN PFP */
 void current_measure(void); // Process ADC values for current measurement
 
-// can functions taken from LVBMS - should be adjusted to match IVT message
-void can_lv_bms_data_a_send_status(void);
-void can_lv_bms_data_a_store(void);
-void can_lv_bms_status_a_send_status(void);
-void can_lv_bms_status_a_store(void);
+// CAN functions
+static void CAN_Filter_Config(void);
+static void CAN_UnpackRxMessage(void);
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -132,8 +137,10 @@ int main(void)
   MX_ADC_Init();
   MX_CAN_Init();
   /* USER CODE BEGIN 2 */
-	HAL_CAN_Start(&hcan);
-	HAL_CAN_WakeUp(&hcan);
+  CAN_Filter_Config();
+  HAL_CAN_Start(&hcan);
+  HAL_CAN_WakeUp(&hcan);
+  HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING | CAN_IT_RX_FIFO1_MSHG_PENDING);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -401,19 +408,77 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 void current_measure(void) {
-	for (int i=0;i < 5; i++)
-	{
-		// Calculate the voltage on the ADC input
-		currMeas_V[i] = (ADC_reference_voltage * ADC_read_value_raw[i]) / 4096.0; // Range: [0, 3.3V]
-		// Calculate the sensor output
-		senseMeas_V[i] = currMeas_V[i] * (27 + 10) / 27.0;
-		// Calculate the current through the sensor
-		current_I[i] = 800 * (senseMeas_V[i] - 9 / 4.0) / 9.0;
-	}
+	double currMeas_V, sensMeas_V;
+	// Calculate the voltage on the ADC input
+	currMeas_V = (ADC_reference_voltage * ADC_read_value_raw[ADC_currN]) / 4096.0; // Range: [0, 3.3V]
+	// Calculate the sensor output
+	senseMeas_V = currMeas_V * (27 + 10) / 27.0;
+	// Calculate the current through the sensor
+	current_I = 800 * (senseMeas_V - 9 / 4.0) / 9.0;
 }
 
+void voltage_measure(void)
+{
+	ADCBat_V = (ADC_reference_voltage * ADC_read_value_raw[ADC_voltBat_N]) / 4096.0; // Range: [0, 3.3V]
+	ADCVehicle_V = (ADC_reference_voltage * ADC_read_value_raw[ADC_voltVehicle_N]) / 4096.0; // Range: [0, 3.3V]
 
-/* CAN Functions - should be adapted for IVT */
+	/* Reverse the voltage division to get actual voltage value */
+	/* division: (2Meg + 2Meg + 2Meg + 1Meg + 300k + (120k || 120k || 120k)) / (120k || 120k || 120k) */
+	vBat_V = (734/4)*ADCBat_V;
+	vVehicle_V = (734/4)*ADCVehicle_V;
+}
+
+void thermistor_measure(void)
+{
+
+}
+
+void CAN_send_status(void)
+{
+	ivt_improved_status.ivt_current = can1_ivt_improved_status_ivt_current_encode((uint8_t) current_I);
+	ivt_improved_status.ivt_voltage_battery = can1_ivt_improved_status_ivt_current_encode((uint16_t) vBat_V);
+	ivt_improved_status.ivt_voltage_battery = can1_ivt_improved_status_ivt_current_encode((uint16_t) vVehicle_V);
+	ivt_improved_status.ivt_current = can1_ivt_improved_status_ivt_current_encode((uint8_t) tTherm1_C);
+	ivt_improved_status.ivt_current = can1_ivt_improved_status_ivt_current_encode((uint8_t) tTherm1_C);
+}
+
+/* Filter not necessary as we do not receive over can */
+static void CAN_Filter_Config(void)
+{
+	//TODO: Configure filter
+
+		CAN_FilterTypeDef sFilterConfig;
+
+		sFilterConfig.FilterActivation = ENABLE;
+
+		sFilterConfig.FilterBank = 0;
+
+		sFilterConfig.FilterFIFOAssignment = CAN_FILTER_FIFO0;
+
+		sFilterConfig.FilterMode = CAN_FILTERMODE_IDMASK;
+
+		sFilterConfig.FilterIdHigh = 0x0000;
+
+		sFilterConfig.FilterIdLow = 0x0000;
+
+		sFilterConfig.FilterMaskIdHigh = 0x0000;
+
+		sFilterConfig.FilterMaskIdLow = 0x0000;
+
+		sFilterConfig.FilterScale = CAN_FILTERSCALE_32BIT;
+
+		if (HAL_CAN_ConfigFilter(&hcan, &sFilterConfig) != HAL_OK) {
+			Error_Handler();
+		}
+
+		sFilterConfig.FilterFIFOAssignment = CAN_FILTER_FIFO1;
+
+		if (HAL_CAN_ConfigFilter(&hcan, &sFilterConfig) != HAL_OK) {
+			Error_Handler();
+		}
+}
+
+/* CAN Functions - should be adapted for IVT
 void can_lv_bms_data_a_store(void) {
 	lv_bms_data_a.current = current_I;
 }
@@ -454,7 +519,7 @@ void can_lv_bms_status_a_send_status(void){
 		Error_Handler();
 
 	}
-}
+} */
 /* USER CODE END 4 */
 
 /**

@@ -976,12 +976,12 @@ BO_ 535 ams_s12_voltages_2: 5 AMS
  SG_ s12v10 : 24|8@1+ (0.00784,2.5) [2.5|4.5] "V"  MCU
  SG_ s12v11 : 32|8@1+ (0.00784,2.5) [2.5|4.5] "V"  MCU
 
-BO_ 29 ivt_improved_status: 8 IVT
- SG_ ivt_voltage_battery : 0|12@1+ (1,0) [0|0] "V" Vector__XXX
- SG_ ivt_voltage_vehicle : 12|12@1+ (1,0) [0|0] "V" Vector__XXX
- SG_ ivt_current : 24|12@1+ (1,0) [0|0] "A" Vector__XXX
- SG_ temp_HVplus : 36|12@1+ (1,0) [0|0] "°C" Vector__XXX
- SG_ temp_HVminus : 48|12@1+ (1,0) [0|0] "°C" Vector__XXX
+BO_ 29 ivt_improved_status: 7 IVT
+ SG_ ivt_voltage_battery : 0|16@1+ (1,0) [0|600] "V" Vector__XXX
+ SG_ ivt_voltage_vehicle : 16|16@1+ (1,0) [0|600] "V" Vector__XXX
+ SG_ ivt_current : 32|8@1+ (1,0) [-50|200] "A" Vector__XXX
+ SG_ temp_HVplus : 40|8@1+ (1,0) [0|0] "°C" Vector__XXX
+ SG_ temp_HVminus : 48|8@1+ (1,0) [0|0] "°C" Vector__XXX
 
 
 
