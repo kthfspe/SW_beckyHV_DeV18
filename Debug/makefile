@@ -35,34 +35,34 @@ $(wildcard ../makefile.init) \
 $(wildcard ../makefile.targets) \
 
 
-BUILD_ARTIFACT_NAME := hall_sim
+BUILD_ARTIFACT_NAME := SW_beckyHV_DeV18
 BUILD_ARTIFACT_EXTENSION := elf
 BUILD_ARTIFACT_PREFIX :=
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME)$(if $(BUILD_ARTIFACT_EXTENSION),.$(BUILD_ARTIFACT_EXTENSION),)
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
-hall_sim.elf \
+SW_beckyHV_DeV18.elf \
 
 MAP_FILES += \
-hall_sim.map \
+SW_beckyHV_DeV18.map \
 
 SIZE_OUTPUT += \
 default.size.stdout \
 
 OBJDUMP_LIST += \
-hall_sim.list \
+SW_beckyHV_DeV18.list \
 
 
 # All Target
 all: main-build
 
 # Main-build Target
-main-build: hall_sim.elf secondary-outputs
+main-build: SW_beckyHV_DeV18.elf secondary-outputs
 
 # Tool invocations
-hall_sim.elf hall_sim.map: $(OBJS) $(USER_OBJS) C:\Users\ionie\Documents\UniDocs\KTH\Courses\Becky2\resMeth\sims\hall_si\STM32F091RCTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "hall_sim.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0 -T"C:\Users\ionie\Documents\UniDocs\KTH\Courses\Becky2\resMeth\sims\hall_si\STM32F091RCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="hall_sim.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+SW_beckyHV_DeV18.elf SW_beckyHV_DeV18.map: $(OBJS) $(USER_OBJS) C:\Users\ionie\Documents\UniDocs\KTH\Courses\Becky2\SW_beckyHV_DeV18\STM32F091RCTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "SW_beckyHV_DeV18.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0 -T"C:\Users\ionie\Documents\UniDocs\KTH\Courses\Becky2\SW_beckyHV_DeV18\STM32F091RCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="SW_beckyHV_DeV18.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -71,14 +71,14 @@ default.size.stdout: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-hall_sim.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "hall_sim.list"
+SW_beckyHV_DeV18.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "SW_beckyHV_DeV18.list"
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) default.size.stdout hall_sim.elf hall_sim.list hall_sim.map
+	-$(RM) SW_beckyHV_DeV18.elf SW_beckyHV_DeV18.list SW_beckyHV_DeV18.map default.size.stdout
 	-@echo ' '
 
 secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)

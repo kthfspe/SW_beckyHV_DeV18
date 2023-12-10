@@ -1,0 +1,7 @@
+things to add to IVT code
+-- good error reporting on CAN and in general
+-- flickering of LEDs according to MCU error status
+-- ADC error is inconsistent on different MCU pins - on development board pin A0 it is +(20 to 40), on pin A1 it is only +(10 to 20).
+   Need to troubleshoot this more  
+-- Implement periodic re-calibration based on the internal temperature sensor?
+   Saw it recommended on https://community.st.com/t5/stm32-mcus-embedded-software/how-to-calibrate-the-adcs-on-stm32-using-the-hal-library/td-p/441795.	

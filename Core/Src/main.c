@@ -22,6 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <math.h>
+#include <stdio.h> // only for debugging purposes, remove if space is limited
 #include "../CAN/lib/can1.h"
 /* USER CODE END Includes */
 
@@ -34,6 +35,7 @@
 /* USER CODE BEGIN PD */
 
 /* Define which ADCs are taking which measurements */
+#define ADC_N 5 // number of adc pins active
 #define ADC_curr_N 0
 #define ADC_therm1_N 1
 #define ADC_therm2_N 2
@@ -52,9 +54,12 @@ DMA_HandleTypeDef hdma_adc;
 
 CAN_HandleTypeDef hcan;
 
+TIM_HandleTypeDef htim3;
+
 /* USER CODE BEGIN PV */
-int period = 100; /* period given in ms */
+int period = 50; /* period given in ms */
 int timeout_time = 50; /* time given in ms */
+int SEND_ON_CAN = 0;
 
 typedef enum {
 	no_error,
@@ -68,13 +73,13 @@ typedef enum {
 } error_t;
 
 error_t error = no_error;
-volatile uint16_t ADC_read_value_raw[5]; // Range: [0,4096]
+volatile uint16_t ADC_read_value_raw[5]; // Range: [0,4095]
 float ADC_reference_voltage = 3.3;
 
 volatile int ADC_interrupt_flag;  // set by ADC callback
 volatile int timeout;
 double current_I, vBat_V, vVehicle_V, tTherm1_C, tTherm2_C; // measurement variables
-
+HAL_StatusTypeDef ADC_status;
 /* ======= CAN =========== */
 CAN_TxHeaderTypeDef pTxHeader;
 CAN_RxHeaderTypeDef pRxHeader;
@@ -91,13 +96,16 @@ static void MX_GPIO_Init(void);
 static void MX_DMA_Init(void);
 static void MX_ADC_Init(void);
 static void MX_CAN_Init(void);
+static void MX_TIM3_Init(void);
 /* USER CODE BEGIN PFP */
+/* Timer 3 has a 500kHz period */
 void current_measure(void); // Process ADC values for current measurement
+void voltage_measure(void);
+double ADC_to_Temperature(double ADC_value);
 
 // CAN functions
-static void CAN_Filter_Config(void);
-static void CAN_UnpackRxMessage(void);
-
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
+void CAN_send_status(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -136,42 +144,57 @@ int main(void)
   MX_DMA_Init();
   MX_ADC_Init();
   MX_CAN_Init();
+  MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
-  CAN_Filter_Config();
   HAL_CAN_Start(&hcan);
   HAL_CAN_WakeUp(&hcan);
-  HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING | CAN_IT_RX_FIFO1_MSHG_PENDING);
+  // Calibrate the ADC
+  ADC_status = HAL_ADCEx_Calibration_Start(&hadc);
+  if (ADC_status == HAL_ERROR)
+	  Error_Handler();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 	while (1) {
 
+
+		/* Only for checking on the development board */
+		/* REPLACE WITH ACTUAL LEDS for PCB */
 		HAL_GPIO_TogglePin(GPIOA, LED_LD2_Pin);
 
 		/* Initialise flags on loop */
 		ADC_interrupt_flag = 0;
 		timeout = 1;
 
-		/* Take ADC values using the DMA */
-		HAL_ADC_Start_DMA(&hadc, (uint16_t *)ADC_read_value_raw, (uint16_t)5);
+		// Take ADC values using the DMA
+		HAL_ADC_Start_DMA(&hadc, (uint16_t *)ADC_read_value_raw, (uint16_t)ADC_N);
 		for (int i = 0; i < ((timeout_time / 10) - 1); i++) {
 			if (ADC_interrupt_flag == 1) {
 
 				timeout = 0;
 
-				//Check current reading
+				//Check current reading, store in current_I
 				current_measure();
+				//Check voltage readings, store in vBat_V and vVehicle_V
+				voltage_measure();
+				// Take thermistor readings
+				tTherm1_C = ADC_to_Temperature(ADC_therm1_N);
+				tTherm2_C = ADC_to_Temperature(ADC_therm2_N);
+
 				break;
 			}
 			HAL_Delay(50);
 		}
 
 		//Send data and status on CAN
-	//	can_lv_bms_data_a_store();
-	//	can_lv_bms_data_a_send_status();
-	//	can_lv_bms_status_a_store();
-	//	can_lv_bms_status_a_send_status();
+		if (SEND_ON_CAN == 1)
+		{
+			HAL_TIM_Base_Stop_IT(&htim3); // stop timer once it is complete
+			CAN_send_status(); //pack data and send on CAN
+			SEND_ON_CAN = 0;
+			HAL_TIM_Base_Start_IT(&htim3); // start timer again
+		}
 
 		//If we haven't received values from ADC trough DMA -> timeout error
 		if (timeout) {
@@ -183,11 +206,12 @@ int main(void)
 			Error_Handler();
 
 			HAL_Delay(period);
+		}
+	}
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		}
-	}
+
   /* USER CODE END 3 */
 }
 
@@ -352,6 +376,51 @@ static void MX_CAN_Init(void)
 }
 
 /**
+  * @brief TIM3 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM3_Init(void)
+{
+
+  /* USER CODE BEGIN TIM3_Init 0 */
+
+  /* USER CODE END TIM3_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM3_Init 1 */
+
+  /* USER CODE END TIM3_Init 1 */
+  htim3.Instance = TIM3;
+  htim3.Init.Prescaler = 16;
+  htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim3.Init.Period = 49999;
+  htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+  if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim3, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM3_Init 2 */
+
+  /* USER CODE END TIM3_Init 2 */
+
+}
+
+/**
   * Enable DMA controller clock
   */
 static void MX_DMA_Init(void)
@@ -410,17 +479,18 @@ static void MX_GPIO_Init(void)
 void current_measure(void) {
 	double currMeas_V, sensMeas_V;
 	// Calculate the voltage on the ADC input
-	currMeas_V = (ADC_reference_voltage * ADC_read_value_raw[ADC_currN]) / 4096.0; // Range: [0, 3.3V]
+	currMeas_V = (ADC_reference_voltage * ADC_read_value_raw[ADC_curr_N]) / 4095.0; // Range: [0, 3.3V]
 	// Calculate the sensor output
-	senseMeas_V = currMeas_V * (27 + 10) / 27.0;
+	sensMeas_V = currMeas_V * (27 + 10) / 27.0;
 	// Calculate the current through the sensor
-	current_I = 800 * (senseMeas_V - 9 / 4.0) / 9.0;
+	current_I = 800 * (sensMeas_V - 9 / 4.0) / 9.0;
 }
 
 void voltage_measure(void)
 {
-	ADCBat_V = (ADC_reference_voltage * ADC_read_value_raw[ADC_voltBat_N]) / 4096.0; // Range: [0, 3.3V]
-	ADCVehicle_V = (ADC_reference_voltage * ADC_read_value_raw[ADC_voltVehicle_N]) / 4096.0; // Range: [0, 3.3V]
+	double ADCBat_V, ADCVehicle_V;
+	ADCBat_V = (ADC_reference_voltage * ADC_read_value_raw[ADC_voltBat_N]) / 4095.0; // Range: [0, 3.3V]
+	ADCVehicle_V = (ADC_reference_voltage * ADC_read_value_raw[ADC_voltVehicle_N]) / 4095.0; // Range: [0, 3.3V]
 
 	/* Reverse the voltage division to get actual voltage value */
 	/* division: (2Meg + 2Meg + 2Meg + 1Meg + 300k + (120k || 120k || 120k)) / (120k || 120k || 120k) */
@@ -428,9 +498,18 @@ void voltage_measure(void)
 	vVehicle_V = (734/4)*ADCVehicle_V;
 }
 
-void thermistor_measure(void)
-{
-
+/*
+ The code defines a function "ADC_to_Temperature" that calculates the temperature in degrees Celsius
+ based on an ADC value, using the Steinhart-Hart equation and specific parameters such as the
+ Beta value, reference temperature, and nominal resistance of a thermistor. The function takes
+ the ADC value as input, performs the calculation, and returns the corresponding temperature.
+ */
+double ADC_to_Temperature(double ADC_value) {	//TODO: calibrate
+	double beta = 3500;
+	double temp = 25 + 273.15;
+	double R0 = 10000 * exp(-beta / temp);
+	double R = 10000;
+	return beta / (log(R * ADC_value ) - log(-R0 * (ADC_value - 4095))) - 273.15;
 }
 
 void CAN_send_status(void)
@@ -440,42 +519,27 @@ void CAN_send_status(void)
 	ivt_improved_status.ivt_voltage_battery = can1_ivt_improved_status_ivt_current_encode((uint16_t) vVehicle_V);
 	ivt_improved_status.ivt_current = can1_ivt_improved_status_ivt_current_encode((uint8_t) tTherm1_C);
 	ivt_improved_status.ivt_current = can1_ivt_improved_status_ivt_current_encode((uint8_t) tTherm1_C);
+
+	pTxHeader.DLC = CAN1_IVT_IMPROVED_STATUS_LENGTH;
+	pTxHeader.IDE = CAN_ID_STD;
+	pTxHeader.StdId = CAN1_IVT_IMPROVED_STATUS_FRAME_ID;
+	pTxHeader.RTR = CAN_RTR_DATA;
+	pTxHeader.TransmitGlobalTime = DISABLE;
+
+	can1_ivt_improved_status_pack(TxData, &ivt_improved_status, CAN1_IVT_IMPROVED_STATUS_LENGTH);
+	if (HAL_CAN_AddTxMessage(&hcan, &pTxHeader, TxData, &TxMailbox) != HAL_OK) {
+		Error_Handler();
+	}
 }
 
-/* Filter not necessary as we do not receive over can */
-static void CAN_Filter_Config(void)
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-	//TODO: Configure filter
+  // Check which version of the timer triggered this callback and send on CAN if it's tim3.
+  if (htim == &htim3 )
+  {
+    SEND_ON_CAN = 1;
 
-		CAN_FilterTypeDef sFilterConfig;
-
-		sFilterConfig.FilterActivation = ENABLE;
-
-		sFilterConfig.FilterBank = 0;
-
-		sFilterConfig.FilterFIFOAssignment = CAN_FILTER_FIFO0;
-
-		sFilterConfig.FilterMode = CAN_FILTERMODE_IDMASK;
-
-		sFilterConfig.FilterIdHigh = 0x0000;
-
-		sFilterConfig.FilterIdLow = 0x0000;
-
-		sFilterConfig.FilterMaskIdHigh = 0x0000;
-
-		sFilterConfig.FilterMaskIdLow = 0x0000;
-
-		sFilterConfig.FilterScale = CAN_FILTERSCALE_32BIT;
-
-		if (HAL_CAN_ConfigFilter(&hcan, &sFilterConfig) != HAL_OK) {
-			Error_Handler();
-		}
-
-		sFilterConfig.FilterFIFOAssignment = CAN_FILTER_FIFO1;
-
-		if (HAL_CAN_ConfigFilter(&hcan, &sFilterConfig) != HAL_OK) {
-			Error_Handler();
-		}
+  }
 }
 
 /* CAN Functions - should be adapted for IVT
@@ -532,10 +596,8 @@ void Error_Handler(void)
 	/* User can add his own implementation to report the HAL error return state */
 	//__disable_irq();
 	// Send error information on CAN
-	//can_lv_bms_data_a_store();
-//	can_lv_bms_data_a_send_status();
-//	can_lv_bms_status_a_store();
-//	can_lv_bms_status_a_send_status();
+	if(ADC_status == HAL_ERROR)
+		printf("ADC Error");
 	HAL_Delay(100);
 	NVIC_SystemReset();
   /* USER CODE END Error_Handler_Debug */
