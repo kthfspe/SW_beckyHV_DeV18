@@ -56,7 +56,6 @@
 
 /* External variables --------------------------------------------------------*/
 extern DMA_HandleTypeDef hdma_adc;
-extern CAN_HandleTypeDef hcan;
 extern TIM_HandleTypeDef htim3;
 /* USER CODE BEGIN EV */
 
@@ -168,20 +167,6 @@ void TIM3_IRQHandler(void)
   /* USER CODE BEGIN TIM3_IRQn 1 */
 
   /* USER CODE END TIM3_IRQn 1 */
-}
-
-/**
-  * @brief This function handles HDMI-CEC and CAN global interrupts / HDMI-CEC wake-up interrupt through EXTI line 27.
-  */
-void CEC_CAN_IRQHandler(void)
-{
-  /* USER CODE BEGIN CEC_CAN_IRQn 0 */
-
-  /* USER CODE END CEC_CAN_IRQn 0 */
-  HAL_CAN_IRQHandler(&hcan);
-  /* USER CODE BEGIN CEC_CAN_IRQn 1 */
-
-  /* USER CODE END CEC_CAN_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

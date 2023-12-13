@@ -57,7 +57,7 @@ CAN_HandleTypeDef hcan;
 TIM_HandleTypeDef htim3;
 
 /* USER CODE BEGIN PV */
-int period = 50; /* period given in ms */
+int period = 100; /* period given in ms */
 int timeout_time = 50; /* time given in ms */
 int SEND_ON_CAN = 0;
 
@@ -161,14 +161,14 @@ int main(void)
 
 		/* Only for checking on the development board */
 		/* REPLACE WITH ACTUAL LEDS for PCB */
-		HAL_GPIO_TogglePin(GPIOA, LED_LD2_Pin);
+		HAL_GPIO_TogglePin(MCU_STATUS_LED_3_GREEN_GPIO_Port, MCU_STATUS_LED_3_GREEN_Pin);
 
 		/* Initialise flags on loop */
 		ADC_interrupt_flag = 0;
 		timeout = 1;
 
 		// Take ADC values using the DMA
-		HAL_ADC_Start_DMA(&hadc, (uint16_t *)ADC_read_value_raw, (uint16_t)ADC_N);
+		HAL_ADC_Start_DMA(&hadc, (uint32_t *)ADC_read_value_raw, (uint16_t)ADC_N);
 		for (int i = 0; i < ((timeout_time / 10) - 1); i++) {
 			if (ADC_interrupt_flag == 1) {
 
@@ -186,7 +186,7 @@ int main(void)
 			}
 			HAL_Delay(50);
 		}
-
+		CAN_send_status();
 		//Send data and status on CAN
 		if (SEND_ON_CAN == 1)
 		{
@@ -204,9 +204,8 @@ int main(void)
 		//Check if we have an error, if yes go to error handler
 		if (error) {
 			Error_Handler();
-
-			HAL_Delay(period);
 		}
+		HAL_Delay(period);
 	}
     /* USER CODE END WHILE */
 
@@ -455,7 +454,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(LED_LD2_GPIO_Port, LED_LD2_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13|MCU_STATUS_LED_1_RED_Pin|MCU_STATUS_LED_2_YLW_Pin|MCU_STATUS_LED_3_GREEN_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : LED_LD2_Pin */
   GPIO_InitStruct.Pin = LED_LD2_Pin;
@@ -464,8 +463,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LED_LD2_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PB13 PB4 PB5 PB6 */
-  GPIO_InitStruct.Pin = GPIO_PIN_13|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6;
+  /*Configure GPIO pins : PB13 MCU_STATUS_LED_1_RED_Pin MCU_STATUS_LED_2_YLW_Pin MCU_STATUS_LED_3_GREEN_Pin */
+  GPIO_InitStruct.Pin = GPIO_PIN_13|MCU_STATUS_LED_1_RED_Pin|MCU_STATUS_LED_2_YLW_Pin|MCU_STATUS_LED_3_GREEN_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -476,6 +475,10 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc) {
+	ADC_interrupt_flag = 1;
+}
+
 void current_measure(void) {
 	double currMeas_V, sensMeas_V;
 	// Calculate the voltage on the ADC input
@@ -529,6 +532,7 @@ void CAN_send_status(void)
 	can1_ivt_improved_status_pack(TxData, &ivt_improved_status, CAN1_IVT_IMPROVED_STATUS_LENGTH);
 	if (HAL_CAN_AddTxMessage(&hcan, &pTxHeader, TxData, &TxMailbox) != HAL_OK) {
 		Error_Handler();
+
 	}
 }
 
@@ -590,17 +594,20 @@ void can_lv_bms_status_a_send_status(void){
   * @brief  This function is executed in case of error occurrence.
   * @retval None
   */
-void Error_Handler(void)
-{
-  /* USER CODE BEGIN Error_Handler_Debug */
+void Error_Handler(void) {
+	/* USER CODE BEGIN Error_Handler_Debug */
 	/* User can add his own implementation to report the HAL error return state */
 	//__disable_irq();
 	// Send error information on CAN
-	if(ADC_status == HAL_ERROR)
-		printf("ADC Error");
-	HAL_Delay(100);
-	NVIC_SystemReset();
-  /* USER CODE END Error_Handler_Debug */
+	while (1) {
+		HAL_GPIO_WritePin(MCU_STATUS_LED_2_YLW_GPIO_Port,
+				MCU_STATUS_LED_2_YLW_Pin, 1);
+		if (ADC_status == HAL_ERROR)
+			printf("ADC Error");
+		HAL_Delay(100);
+	}
+	//NVIC_SystemReset();
+	/* USER CODE END Error_Handler_Debug */
 }
 
 #ifdef  USE_FULL_ASSERT
