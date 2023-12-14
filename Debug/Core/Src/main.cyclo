@@ -7,8 +7,8 @@
 ../Core/Src/main.c:447:13:MX_GPIO_Init	1
 ../Core/Src/main.c:482:6:HAL_ADC_ConvCpltCallback	1
 ../Core/Src/main.c:486:6:current_measure	1
-../Core/Src/main.c:500:6:voltage_measure	1
-../Core/Src/main.c:518:8:ADC_to_Temperature	1
-../Core/Src/main.c:526:6:CAN_send_status	2
-../Core/Src/main.c:548:6:HAL_TIM_PeriodElapsedCallback	2
-../Core/Src/main.c:606:6:Error_Handler	2
+../Core/Src/main.c:503:6:voltage_measure	1
+../Core/Src/main.c:521:8:ADC_to_Temperature	1
+../Core/Src/main.c:529:6:CAN_send_status	2
+../Core/Src/main.c:551:6:HAL_TIM_PeriodElapsedCallback	2
+../Core/Src/main.c:609:6:Error_Handler	2

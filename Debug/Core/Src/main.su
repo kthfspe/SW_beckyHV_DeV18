@@ -6,9 +6,9 @@
 ../Core/Src/main.c:429:13:MX_DMA_Init	16	static
 ../Core/Src/main.c:447:13:MX_GPIO_Init	48	static
 ../Core/Src/main.c:482:6:HAL_ADC_ConvCpltCallback	16	static
-../Core/Src/main.c:486:6:current_measure	24	static
-../Core/Src/main.c:500:6:voltage_measure	24	static
-../Core/Src/main.c:518:8:ADC_to_Temperature	64	static
-../Core/Src/main.c:526:6:CAN_send_status	8	static
-../Core/Src/main.c:548:6:HAL_TIM_PeriodElapsedCallback	16	static
-../Core/Src/main.c:606:6:Error_Handler	8	static
+../Core/Src/main.c:486:6:current_measure	16	static
+../Core/Src/main.c:503:6:voltage_measure	24	static
+../Core/Src/main.c:521:8:ADC_to_Temperature	64	static
+../Core/Src/main.c:529:6:CAN_send_status	8	static
+../Core/Src/main.c:551:6:HAL_TIM_PeriodElapsedCallback	16	static
+../Core/Src/main.c:609:6:Error_Handler	8	static

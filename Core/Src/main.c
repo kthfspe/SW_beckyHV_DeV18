@@ -183,8 +183,8 @@ int main(void)
 				//Check voltage readings, store in vBat_V and vVehicle_V
 				voltage_measure();
 				// Take thermistor readings
-				tTherm1_C = ADC_to_Temperature(ADC_therm1_N);
-				tTherm2_C = ADC_to_Temperature(ADC_therm2_N);
+				tTherm1_C = ADC_to_Temperature(ADC_read_value_raw[ADC_therm1_N]);
+				tTherm2_C = ADC_to_Temperature(ADC_read_value_raw[ADC_therm2_N]);
 
 				break;
 			}
@@ -484,6 +484,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc) {
 }
 
 void current_measure(void) {
+	/*
 	double currMeas_V, sensMeas_V;
 	// Calculate the voltage on the ADC input
 	currMeas_V = (ADC_reference_voltage * ADC_read_value_raw[ADC_curr_N]) / 4095.0; // Range: [0, 3.3V]
@@ -492,9 +493,11 @@ void current_measure(void) {
 	// Calculate the current through the sensor: Vsens = 2,5 + 10e-3*Iactual
 	// Based on measurements: Vsens = 2,482 + 10e-3*Iactual
 	// Need a lot of characterisation to make this at all accurate
-	current_I = 100*sensMeas_V - 248.2 + 8.78; //Amps (8.78 is an offset to keep it at roughly 0A when it should be 0)
+	current_I = (100*sensMeas_V - 248.2 + 8.78)/0.63; //Amps (8.78 is an offset to keep it at roughly 0A when it should be 0)
 	// TODO: Should add some sort of averaging here, need to improve accuracy somehow of current measurement
 	current_CAN = (uint8_t) current_I;
+	*/
+	current_I = -9.706 * pow(10,-10) * pow(ADC_read_value_raw[ADC_curr_N],3) + 1.431*pow(10,-5) * pow(ADC_read_value_raw[ADC_curr_N],2) + 0.09581 * ADC_read_value_raw[ADC_curr_N] - 262.3;
 }
 
 void voltage_measure(void)
