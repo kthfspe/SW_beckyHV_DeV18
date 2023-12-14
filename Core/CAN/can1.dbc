@@ -204,7 +204,9 @@ BO_ 401 res_status: 8 RES
  SG_ e_stop : 0|1@1+ (1,0) [0|0] ""  MCU
  SG_ switch_status : 1|1@1+ (1,0) [0|0] "" Vector__XXX
  SG_ button_status : 2|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ e_stop_redundancy : 7|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ e_stop_redundancy : 23|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ radio_quality : 48|8@1+ (1,0) [0|0] "%" Vector__XXX
+ SG_ radio_state : 56|8@1+ (1,0) [0|0] "" Vector__XXX
 
 BO_ 1809 res_initialization: 8 RES
  SG_ res_init : 0|8@1+ (1,0) [0|0] ""  MCU
@@ -493,7 +495,7 @@ BO_ 16 dcu_pps: 8 DCU
 BO_ 18 dcu_status: 6 DCU
  SG_ normalized_brake_pedal_travel : 0|16@1+ (1.525902e-05,0) [0|1] "."  MCU
  SG_ normalized_accelerator_pedal_travel : 16|16@1+ (1.525902e-05,0) [0|1] "."  MCU
- SG_ normalized_steering_wheel_angle : 32|16@1+ (1.525902e-05,0) [4294967295|1] "."  MCU
+ SG_ normalized_steering_wheel_angle : 32|16@1- (0.01,0) [-100|100] "degrees"  MCU
 
 BO_ 90 mcu_set_ccu_cooling_points: 8 MCU
  SG_ fan1_speed m0 : 8|8@1+ (1,0) [0|100] "%"  CCU
@@ -976,12 +978,22 @@ BO_ 535 ams_s12_voltages_2: 5 AMS
  SG_ s12v10 : 24|8@1+ (0.00784,2.5) [2.5|4.5] "V"  MCU
  SG_ s12v11 : 32|8@1+ (0.00784,2.5) [2.5|4.5] "V"  MCU
 
-BO_ 29 ivt_improved_status: 7 IVT
+BO_ 29 ivt_improved_status: 8 IVT
  SG_ ivt_voltage_battery : 0|16@1+ (1,0) [0|600] "V" Vector__XXX
  SG_ ivt_voltage_vehicle : 16|16@1+ (1,0) [0|600] "V" Vector__XXX
- SG_ ivt_current : 32|8@1+ (1,0) [-50|200] "A" Vector__XXX
- SG_ temp_HVplus : 40|8@1+ (1,0) [0|0] "°C" Vector__XXX
- SG_ temp_HVminus : 48|8@1+ (1,0) [0|0] "°C" Vector__XXX
+ SG_ ivt_current : 32|16@1- (1,0) [-50|200] "A" Vector__XXX
+ SG_ temp_HVplus : 48|8@1+ (1,0) [0|0] "°C" Vector__XXX
+ SG_ temp_HVminus : 56|8@1+ (1,0) [0|0] "°C" Vector__XXX
+
+BO_ 529 res_recieve_PDO: 8 RES
+
+BO_ 1425 res_transmit_SDO: 8 RES
+
+BO_ 1553 res_recieve_SDO: 8 RES
+
+BO_ 2020 res_transmit_LSS: 8 RES
+
+BO_ 2021 res_recieve_LSS: 8 RES
 
 
 
@@ -993,6 +1005,8 @@ CM_ BO_ 32 "Used for DBU hardware IO.";
 CM_ BO_ 1280 "Required by FSG.";
 CM_ BO_ 1281 "Required by FSG.";
 CM_ BO_ 1282 "Required by FSG.";
+CM_ SG_ 401 radio_state "pre-alarm radio communication interruption (200 ms in advance to shutdown)
+";
 CM_ SG_ 16 brake_pedal_angle "";
 CM_ BO_ 90 "";
 CM_ BO_ 65 "Used for DBU software IO.";
@@ -1021,12 +1035,17 @@ CM_ SG_ 2147483673 Set_Duty "Duty Cycle
 ";
 CM_ SG_ 2147485977 ERPM "ERPM
 ";
+CM_ BO_ 529 "From competition handbook";
 CM_ SG_ 29 ivt_voltage_battery "Voltage measurement on battery side";
 CM_ SG_ 29 ivt_voltage_vehicle "Voltage measurement on vehicle side";
 CM_ SG_ 29 ivt_current "Current measurement";
 CM_ SG_ 29 temp_HVplus "Temperature Measurement on the HV+ side of board";
 CM_ SG_ 29 temp_HVminus "Temperature Measurement on HV- side of battery
 ";
+CM_ BO_ 1425 "From competition handbook";
+CM_ BO_ 1553 "From competition handbook";
+CM_ BO_ 2020 "From competition handbook";
+CM_ BO_ 2021 "From competition handbook";
 BA_DEF_ BO_  "GenMsgCycleTime" INT 0 65535;
 BA_DEF_DEF_  "GenMsgCycleTime" 0;
 BA_ "GenMsgCycleTime" BO_ 32 400;

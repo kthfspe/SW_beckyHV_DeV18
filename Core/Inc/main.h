@@ -65,6 +65,8 @@ void Error_Handler(void);
 #define thermistor_2_GPIO_Port GPIOA
 #define LED_LD2_Pin GPIO_PIN_5
 #define LED_LD2_GPIO_Port GPIOA
+#define isolator_enable_Pin GPIO_PIN_13
+#define isolator_enable_GPIO_Port GPIOB
 #define MCU_STATUS_LED_1_RED_Pin GPIO_PIN_4
 #define MCU_STATUS_LED_1_RED_GPIO_Port GPIOB
 #define MCU_STATUS_LED_2_YLW_Pin GPIO_PIN_5

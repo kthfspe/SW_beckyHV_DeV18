@@ -74,18 +74,19 @@ typedef enum {
 
 error_t error = no_error;
 volatile uint16_t ADC_read_value_raw[5]; // Range: [0,4095]
-float ADC_reference_voltage = 3.3;
+volatile float ADC_reference_voltage = 3.3;
 
 volatile int ADC_interrupt_flag;  // set by ADC callback
 volatile int timeout;
-double current_I, vBat_V, vVehicle_V, tTherm1_C, tTherm2_C; // measurement variables
+volatile double current_I, vBat_V, vVehicle_V, tTherm1_C, tTherm2_C; // measurement variables
+volatile uint8_t current_CAN;
 HAL_StatusTypeDef ADC_status;
 /* ======= CAN =========== */
 CAN_TxHeaderTypeDef pTxHeader;
 CAN_RxHeaderTypeDef pRxHeader;
 uint8_t TxData[8]; // transmitted data
 uint8_t RxData[8]; // received data
-uint32_t TxMailbox; // mailbox to store received message
+uint32_t TxMailbox; // mailbox to store transmitted message
 
 struct can1_ivt_improved_status_t ivt_improved_status;
 /* USER CODE END PV */
@@ -148,6 +149,9 @@ int main(void)
   /* USER CODE BEGIN 2 */
   HAL_CAN_Start(&hcan);
   HAL_CAN_WakeUp(&hcan);
+
+  // set isolator pin to high permanently
+  HAL_GPIO_WritePin(isolator_enable_GPIO_Port, isolator_enable_Pin, GPIO_PIN_SET);
   // Calibrate the ADC
   ADC_status = HAL_ADCEx_Calibration_Start(&hadc);
   if (ADC_status == HAL_ERROR)
@@ -186,7 +190,7 @@ int main(void)
 			}
 			HAL_Delay(50);
 		}
-		CAN_send_status();
+		CAN_send_status(); // bypass the timer
 		//Send data and status on CAN
 		if (SEND_ON_CAN == 1)
 		{
@@ -454,7 +458,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(LED_LD2_GPIO_Port, LED_LD2_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13|MCU_STATUS_LED_1_RED_Pin|MCU_STATUS_LED_2_YLW_Pin|MCU_STATUS_LED_3_GREEN_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, isolator_enable_Pin|MCU_STATUS_LED_1_RED_Pin|MCU_STATUS_LED_2_YLW_Pin|MCU_STATUS_LED_3_GREEN_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : LED_LD2_Pin */
   GPIO_InitStruct.Pin = LED_LD2_Pin;
@@ -463,8 +467,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LED_LD2_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PB13 MCU_STATUS_LED_1_RED_Pin MCU_STATUS_LED_2_YLW_Pin MCU_STATUS_LED_3_GREEN_Pin */
-  GPIO_InitStruct.Pin = GPIO_PIN_13|MCU_STATUS_LED_1_RED_Pin|MCU_STATUS_LED_2_YLW_Pin|MCU_STATUS_LED_3_GREEN_Pin;
+  /*Configure GPIO pins : isolator_enable_Pin MCU_STATUS_LED_1_RED_Pin MCU_STATUS_LED_2_YLW_Pin MCU_STATUS_LED_3_GREEN_Pin */
+  GPIO_InitStruct.Pin = isolator_enable_Pin|MCU_STATUS_LED_1_RED_Pin|MCU_STATUS_LED_2_YLW_Pin|MCU_STATUS_LED_3_GREEN_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -485,8 +489,12 @@ void current_measure(void) {
 	currMeas_V = (ADC_reference_voltage * ADC_read_value_raw[ADC_curr_N]) / 4095.0; // Range: [0, 3.3V]
 	// Calculate the sensor output
 	sensMeas_V = currMeas_V * (27 + 10) / 27.0;
-	// Calculate the current through the sensor
-	current_I = 800 * (sensMeas_V - 9 / 4.0) / 9.0;
+	// Calculate the current through the sensor: Vsens = 2,5 + 10e-3*Iactual
+	// Based on measurements: Vsens = 2,482 + 10e-3*Iactual
+	// Need a lot of characterisation to make this at all accurate
+	current_I = 100*sensMeas_V - 248.2 + 8.78; //Amps (8.78 is an offset to keep it at roughly 0A when it should be 0)
+	// TODO: Should add some sort of averaging here, need to improve accuracy somehow of current measurement
+	current_CAN = (uint8_t) current_I;
 }
 
 void voltage_measure(void)
@@ -517,12 +525,13 @@ double ADC_to_Temperature(double ADC_value) {	//TODO: calibrate
 
 void CAN_send_status(void)
 {
-	ivt_improved_status.ivt_current = can1_ivt_improved_status_ivt_current_encode((uint8_t) current_I);
-	ivt_improved_status.ivt_voltage_battery = can1_ivt_improved_status_ivt_current_encode((uint16_t) vBat_V);
-	ivt_improved_status.ivt_voltage_battery = can1_ivt_improved_status_ivt_current_encode((uint16_t) vVehicle_V);
-	ivt_improved_status.ivt_current = can1_ivt_improved_status_ivt_current_encode((uint8_t) tTherm1_C);
-	ivt_improved_status.ivt_current = can1_ivt_improved_status_ivt_current_encode((uint8_t) tTherm1_C);
+	ivt_improved_status.ivt_current = can1_ivt_improved_status_ivt_current_encode(current_I);
+	ivt_improved_status.ivt_voltage_battery = can1_ivt_improved_status_ivt_voltage_battery_encode(vBat_V);
+	ivt_improved_status.ivt_voltage_vehicle = can1_ivt_improved_status_ivt_voltage_vehicle_encode(vVehicle_V);
+	ivt_improved_status.temp_h_vplus = can1_ivt_improved_status_temp_h_vplus_encode(tTherm1_C);
+	ivt_improved_status.temp_h_vminus = can1_ivt_improved_status_temp_h_vminus_encode(tTherm2_C);
 
+	// TODO : fix mapping of voltage signals so that they can be signed
 	pTxHeader.DLC = CAN1_IVT_IMPROVED_STATUS_LENGTH;
 	pTxHeader.IDE = CAN_ID_STD;
 	pTxHeader.StdId = CAN1_IVT_IMPROVED_STATUS_FRAME_ID;
@@ -594,8 +603,9 @@ void can_lv_bms_status_a_send_status(void){
   * @brief  This function is executed in case of error occurrence.
   * @retval None
   */
-void Error_Handler(void) {
-	/* USER CODE BEGIN Error_Handler_Debug */
+void Error_Handler(void)
+{
+  /* USER CODE BEGIN Error_Handler_Debug */
 	/* User can add his own implementation to report the HAL error return state */
 	//__disable_irq();
 	// Send error information on CAN
@@ -607,7 +617,7 @@ void Error_Handler(void) {
 		HAL_Delay(100);
 	}
 	//NVIC_SystemReset();
-	/* USER CODE END Error_Handler_Debug */
+  /* USER CODE END Error_Handler_Debug */
 }
 
 #ifdef  USE_FULL_ASSERT
