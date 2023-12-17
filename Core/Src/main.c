@@ -41,6 +41,7 @@
 #define ADC_therm2_N 2
 #define ADC_voltBat_N 3
 #define ADC_voltVehicle_N 4
+#define NUM_AVG_VALS 16
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -73,7 +74,14 @@ typedef enum {
 } error_t;
 
 error_t error = no_error;
-volatile uint16_t ADC_read_value_raw[5]; // Range: [0,4095]
+volatile uint16_t ADC_read_value_raw[ADC_N]; // Range: [0,4095]
+volatile uint16_t ADC_average_value[ADC_N];
+
+// Variables for ADC averaging
+volatile uint16_t ADC_recent_current[NUM_AVG_VALS];
+volatile uint16_t ADC_recent_voltBat[NUM_AVG_VALS];
+volatile uint16_t ADC_recent_voltVehicle[NUM_AVG_VALS];
+
 volatile float ADC_reference_voltage = 3.3;
 
 volatile int ADC_interrupt_flag;  // set by ADC callback
@@ -100,8 +108,8 @@ static void MX_CAN_Init(void);
 static void MX_TIM3_Init(void);
 /* USER CODE BEGIN PFP */
 /* Timer 3 has a 500kHz period */
-void current_measure(void); // Process ADC values for current measurement
-void voltage_measure(void);
+double current_measure(double ADC_value); // Process ADC values for current measurement
+double voltage_measure(double ADC_value);
 double ADC_to_Temperature(double ADC_value);
 
 // CAN functions
@@ -121,7 +129,8 @@ void CAN_send_status(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+	int k1=0,k2=0; // loop variables
+	float sumVar; // used for summation in the average calculation
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -163,8 +172,7 @@ int main(void)
 	while (1) {
 
 
-		/* Only for checking on the development board */
-		/* REPLACE WITH ACTUAL LEDS for PCB */
+		/* Toggle heartbeat */
 		HAL_GPIO_TogglePin(MCU_STATUS_LED_3_GREEN_GPIO_Port, MCU_STATUS_LED_3_GREEN_Pin);
 
 		/* Initialise flags on loop */
@@ -178,13 +186,25 @@ int main(void)
 
 				timeout = 0;
 
-				//Check current reading, store in current_I
-				current_measure();
+				// Rolling average used as it is fast, but downside is slight error propagation
+				// For current and voltage a larger weight is given to the most recent reading, so it is less stable but quicker to react to large swings
+				// The temperature readings have a large weight on previous values
+				// 32 = 2^5 chosen as the weight to use bit-shift arithmetic. A power of 2 is recommended to use bit shift operation
+				// TODO: improve the efficiency of these calculations ,should be possible with additions and bitshifts
+				ADC_average_value[ADC_therm1_N] = round((ADC_read_value_raw[ADC_therm1_N] + ADC_average_value[ADC_therm1_N]*15) >> 4);
+				ADC_average_value[ADC_therm2_N] = round((ADC_read_value_raw[ADC_therm2_N] + ADC_average_value[ADC_therm2_N]*15) >> 4);
+				ADC_average_value[ADC_curr_N] = round((5*ADC_read_value_raw[ADC_curr_N] + ADC_average_value[ADC_curr_N]*11) >> 4);
+				ADC_average_value[ADC_voltBat_N] = round((ADC_read_value_raw[ADC_voltBat_N] + ADC_average_value[ADC_voltBat_N]*15) >> 4);
+				ADC_average_value[ADC_voltVehicle_N] = round((ADC_read_value_raw[ADC_voltVehicle_N] + ADC_average_value[ADC_voltVehicle_N]*15) >> 4);
+
+					//Check current reading, store in current_I
+				current_I = current_measure(ADC_average_value[ADC_curr_N]);
 				//Check voltage readings, store in vBat_V and vVehicle_V
-				voltage_measure();
+				vBat_V = voltage_measure(ADC_average_value[ADC_voltBat_N]);
+				vVehicle_V = voltage_measure(ADC_average_value[ADC_voltVehicle_N]);
 				// Take thermistor readings
-				tTherm1_C = ADC_to_Temperature(ADC_read_value_raw[ADC_therm1_N]);
-				tTherm2_C = ADC_to_Temperature(ADC_read_value_raw[ADC_therm2_N]);
+				tTherm1_C = ADC_to_Temperature(ADC_average_value[ADC_therm1_N]);
+				tTherm2_C = ADC_to_Temperature(ADC_average_value[ADC_therm2_N]);
 
 				break;
 			}
@@ -483,11 +503,11 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc) {
 	ADC_interrupt_flag = 1;
 }
 
-void current_measure(void) {
+double current_measure(double ADC_value) {
 	/*
 	double currMeas_V, sensMeas_V;
 	// Calculate the voltage on the ADC input
-	currMeas_V = (ADC_reference_voltage * ADC_read_value_raw[ADC_curr_N]) / 4095.0; // Range: [0, 3.3V]
+	currMeas_V = (ADC_reference_voltage * ADC_read_value_raw[ADC_curr_N]) / 4096.0; // Range: [0, 3.3V]
 	// Calculate the sensor output
 	sensMeas_V = currMeas_V * (27 + 10) / 27.0;
 	// Calculate the current through the sensor: Vsens = 2,5 + 10e-3*Iactual
@@ -497,19 +517,19 @@ void current_measure(void) {
 	// TODO: Should add some sort of averaging here, need to improve accuracy somehow of current measurement
 	current_CAN = (uint8_t) current_I;
 	*/
-	current_I = -9.706 * pow(10,-10) * pow(ADC_read_value_raw[ADC_curr_N],3) + 1.431*pow(10,-5) * pow(ADC_read_value_raw[ADC_curr_N],2) + 0.09581 * ADC_read_value_raw[ADC_curr_N] - 262.3;
+
+	// current value obtained through characterisation and polynomial fitting
+	return -9.706 * pow(10,-10) * pow(ADC_value,3) + 1.431*pow(10,-5) * pow(ADC_value,2) + 0.09581 * ADC_value - 262.3;
 }
 
-void voltage_measure(void)
+double voltage_measure(double ADC_value)
 {
-	double ADCBat_V, ADCVehicle_V;
-	ADCBat_V = (ADC_reference_voltage * ADC_read_value_raw[ADC_voltBat_N]) / 4095.0; // Range: [0, 3.3V]
-	ADCVehicle_V = (ADC_reference_voltage * ADC_read_value_raw[ADC_voltVehicle_N]) / 4095.0; // Range: [0, 3.3V]
+	double ADCval_V;
+	ADCval_V = (ADC_reference_voltage * ADC_value) / 4096.0; // Range: [0, 3.3V]
 
 	/* Reverse the voltage division to get actual voltage value */
 	/* division: (2Meg + 2Meg + 2Meg + 1Meg + 300k + (120k || 120k || 120k)) / (120k || 120k || 120k) */
-	vBat_V = (734/4)*ADCBat_V;
-	vVehicle_V = (734/4)*ADCVehicle_V;
+	return (734/4)*ADCval_V;
 }
 
 /*

@@ -61,8 +61,8 @@ all: main-build
 main-build: SW_beckyHV_DeV18.elf secondary-outputs
 
 # Tool invocations
-SW_beckyHV_DeV18.elf SW_beckyHV_DeV18.map: $(OBJS) $(USER_OBJS) C:\Users\emilt\Documents\GitHub\SW_beckyHV_DeV18\STM32F091RCTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "SW_beckyHV_DeV18.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0 -T"C:\Users\emilt\Documents\GitHub\SW_beckyHV_DeV18\STM32F091RCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="SW_beckyHV_DeV18.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+SW_beckyHV_DeV18.elf SW_beckyHV_DeV18.map: $(OBJS) $(USER_OBJS) C:\Users\ionie\Documents\UniDocs\KTH\Courses\Becky2\SW_beckyHV_DeV18\STM32F091RCTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "SW_beckyHV_DeV18.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0 -T"C:\Users\ionie\Documents\UniDocs\KTH\Courses\Becky2\SW_beckyHV_DeV18\STM32F091RCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="SW_beckyHV_DeV18.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
